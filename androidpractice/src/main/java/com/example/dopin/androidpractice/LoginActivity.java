@@ -3,23 +3,47 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class LoginActivity extends Activity {
     private EditText mEmailView;
     private EditText mPasswordView;
+    private MyDatabaseHelper dbHelper;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private CheckBox rememberMe;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         mEmailView = (EditText) findViewById(R.id.account);
         mPasswordView = (EditText) findViewById(R.id.password);
+        rememberMe=(CheckBox)findViewById(R.id.rememberMe);
+        //设置账号密码
+        pref= PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isRemember=pref.getBoolean("isRemember",false);
+        if(isRemember){
+            String account =pref.getString("account","");
+            String password=pref.getString("password","");
+            mEmailView.setText(account);
+            mPasswordView.setText(password);
+            rememberMe.setChecked(true);
+        }
+
+        dbHelper=new MyDatabaseHelper(this,"User.db",null,1);
 
         Button login = (Button) findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
@@ -82,9 +106,16 @@ public class LoginActivity extends Activity {
         else if (!isTrue(email,password)) {
             dialogShowWrong();
         }else{
-            Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);
-            finish();
+            editor=pref.edit();
+            if(rememberMe.isChecked()){
+                editor.putBoolean("isRemember",true);
+                editor.putString("account",email);
+                editor.putString("password",password);
+            }else{
+                editor.clear();
+            }
+            editor.commit();
+           IntentIndex();
         }
     }
 
@@ -99,7 +130,7 @@ public class LoginActivity extends Activity {
                 .setMessage("账号或密码不正确！")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //按钮事件
+                        clearPassword();
                     }
                 })
                 .show();
@@ -115,7 +146,28 @@ public class LoginActivity extends Activity {
                 })
                 .show();
     }
+
     private boolean isTrue(String account,String password) {
-        return account.equals("admin")&&password.equals("123456");
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        Cursor cursor=db.query("User",null,null,null,null,null,null);
+        if(cursor.moveToFirst()){
+            do{
+                String accountGet=cursor.getString(cursor.getColumnIndex("account"));
+                String passwordGet=cursor.getString(cursor.getColumnIndex("password"));
+                if(account.equals(accountGet)&&password.equals(passwordGet)){
+                    return true;
+                }
+            }while(cursor.moveToNext());
+        }
+        return false;
+    }
+    private void IntentIndex(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    private void clearPassword(){
+        mEmailView.setText("");
+        mPasswordView.setText("");
     }
 }

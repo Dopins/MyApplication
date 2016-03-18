@@ -2,10 +2,17 @@ package com.example.dopin.androidpractice;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,6 +20,7 @@ import android.widget.EditText;
 
 public class RegisterActivity extends Activity {
 
+    private MyDatabaseHelper dbHelper;
     private Button register;
     private Button back_to_login;
     private EditText accountText;
@@ -22,6 +30,7 @@ public class RegisterActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        createDatabase();
         setContentView(R.layout.activity_register);
         register = (Button) findViewById(R.id.register);
         back_to_login = (Button) findViewById(R.id.back);
@@ -43,9 +52,9 @@ public class RegisterActivity extends Activity {
     }
         private void attemptRegister(){
         View focusView;
-        String account=accountText.toString();
-        String password=passwordText.toString();
-        String comfirmPassword=comfirmPasswordText.toString();
+        String account=accountText.getText().toString();
+        String password=passwordText.getText().toString();
+        String confirmPassword=comfirmPasswordText.getText().toString();
         if(TextUtils.isEmpty(account)){
             focusView = accountText;
             focusView.requestFocus();
@@ -56,14 +65,16 @@ public class RegisterActivity extends Activity {
             focusView.requestFocus();
             passwordText.setError("密码不能为空");
         }
-        else if(TextUtils.isEmpty(comfirmPassword)){
+        else if(TextUtils.isEmpty(confirmPassword)){
             focusView = comfirmPasswordText;
             focusView.requestFocus();
             comfirmPasswordText.setError("确认密码账号不能为空");
-        }else if(!password.equals(comfirmPassword)){
-            showWrongDialog();
-        }else{
+        }else if(password.equals(confirmPassword)){
             register(account,password);
+
+        }else{
+            showWrongDialog();
+
         }
       }
         private void showWrongDialog(){
@@ -82,6 +93,18 @@ public class RegisterActivity extends Activity {
         comfirmPasswordText.setText("");
     }
     private void register(String account,String password){
-
+        dbHelper=new MyDatabaseHelper(this,"User.db",null,1);
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("account",account);
+        values.put("password",password);
+        db.insert("User",null,values);
+        values.clear();
+        finish();
     }
+    private void createDatabase(){
+        dbHelper=new MyDatabaseHelper(this,"User.db",null,1);
+        dbHelper.getWritableDatabase();
+    }
+
 }
