@@ -13,44 +13,89 @@
         android:id="@+id/frag_content">
     </FrameLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-
-        android:background="#161616"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="9"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/weChat"
-            android:text="微信"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/address_book"
-            android:text="通讯录"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/discovery"
-            android:text="发现"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/me"
-            android:text="我"/>
+           <FrameLayout
+               android:id="@+id/weChat"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1">
+               <ImageButton
+                   android:id="@+id/weChatButton"
+                   android:background="@drawable/message_blue"
+                   android:layout_width="35dp"
+                   android:layout_height="30dp"
+                   android:layout_gravity="center"
+                   android:layout_marginBottom="5dp"
+                   />
+               <TextView
+                   android:id="@+id/weChatText"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="bottom|center_horizontal"
+                   android:text="微信"/>
+           </FrameLayout>
+            <FrameLayout
+                android:id="@+id/address_book"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/address_bookButton"
+                    android:background="@drawable/address_list"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="通讯录"/>
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/discovery"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/discoveryButton"
+                    android:background="@drawable/compass"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="发现"/>
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/me"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/meButton"
+                    android:background="@drawable/user"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="我"/>
+            </FrameLayout>
     </LinearLayout>
 </LinearLayout>

@@ -167,7 +167,6 @@ public class LoginActivity extends Activity {
         finish();
     }
     private void clearPassword(){
-        mEmailView.setText("");
         mPasswordView.setText("");
     }
 }
