@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -123,6 +124,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         address_listText.setTextColor(getResources().getColor(R.color.darkGray));
         discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
         weChatText.setTextColor(getResources().getColor(R.color.darkGray));
+    }
+    public void find(View view){
+        Toast.makeText(this, "find", Toast.LENGTH_SHORT).show();
+    }
+    public void add(View view){
+        Toast.makeText(this,"add",Toast.LENGTH_SHORT).show();
     }
 
 }
