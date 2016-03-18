@@ -11,23 +11,35 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
+    android:dividerHeight="0dp"
     android:divider="#0000">
 </ListView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         >
         <EditText
             android:id="@+id/input_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/input_text_shape"
+            android:textSize="15sp"
+            android:layout_margin="5dp"
             android:layout_weight="1"
             android:maxLines="5"/>
         <Button
             android:id="@+id/send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:textSize="15sp"
             android:layout_gravity="bottom"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/send_button_shape"
+            android:textColor="@color/white"
             android:text="发送"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
 </LinearLayout>
