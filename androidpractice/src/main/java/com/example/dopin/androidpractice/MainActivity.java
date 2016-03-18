@@ -2,10 +2,12 @@ package com.example.dopin.androidpractice;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -18,6 +20,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageButton addressBookButton;
     private ImageButton discoveryButton;
     private ImageButton meButton;
+    private TextView weChatText;
+    private TextView address_listText;
+    private TextView discoveryText;
+    private TextView meText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +37,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.frag_content,weChat).commit();
+
+        weChatText=(TextView)findViewById(R.id.weChatText);
+        address_listText=(TextView)findViewById(R.id.address_bookText);
+        discoveryText=(TextView)findViewById(R.id.discoveryText);
+        meText=(TextView)findViewById(R.id.meText);
 
         weChatButton=(ImageButton)findViewById(R.id.weChatButton);
         addressBookButton=(ImageButton)findViewById(R.id.address_bookButton);
@@ -74,24 +85,44 @@ public class MainActivity extends Activity implements View.OnClickListener{
         addressBookButton.setBackgroundResource(R.drawable.address_list);
         discoveryButton.setBackgroundResource(R.drawable.compass);
         meButton.setBackgroundResource(R.drawable.user);
+
+        weChatText.setTextColor(getResources().getColor(R.color.blue));
+        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
+        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
+        meText.setTextColor(getResources().getColor(R.color.darkGray));
     }
     private void turnAddress_book(){
         weChatButton.setBackgroundResource(R.drawable.message);
         addressBookButton.setBackgroundResource(R.drawable.address_list_blue);
         discoveryButton.setBackgroundResource(R.drawable.compass);
         meButton.setBackgroundResource(R.drawable.user);
+
+        address_listText.setTextColor(getResources().getColor(R.color.blue));
+        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
+        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
+        meText.setTextColor(getResources().getColor(R.color.darkGray));
     }
     private void turnDiscovery(){
         weChatButton.setBackgroundResource(R.drawable.message);
         addressBookButton.setBackgroundResource(R.drawable.address_list);
         discoveryButton.setBackgroundResource(R.drawable.compass_blue);
         meButton.setBackgroundResource(R.drawable.user);
+
+        discoveryText.setTextColor(getResources().getColor(R.color.blue));
+        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
+        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
+        meText.setTextColor(getResources().getColor(R.color.darkGray));
     }
     private void turnMe(){
         weChatButton.setBackgroundResource(R.drawable.message);
         addressBookButton.setBackgroundResource(R.drawable.address_list);
         discoveryButton.setBackgroundResource(R.drawable.compass);
         meButton.setBackgroundResource(R.drawable.user_blue);
+
+        meText.setTextColor(getResources().getColor(R.color.blue));
+        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
+        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
+        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
     }
 
 }
