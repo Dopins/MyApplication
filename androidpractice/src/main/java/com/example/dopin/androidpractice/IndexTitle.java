@@ -15,26 +15,5 @@ public class IndexTitle extends LinearLayout {
     public IndexTitle(Context context,AttributeSet attrs){
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.index_title, this);
-        Button find=(Button)findViewById(R.id.findButton);
-        Button add=(Button)findViewById(R.id.addButton);
-        find.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                find();
-            }
-        });
-        add.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add();
-            }
-        });
-
-    }
-    public void find(){
-        Toast.makeText(getContext(),"find",Toast.LENGTH_SHORT).show();
-    }
-    public void add(){
-        Toast.makeText(getContext(),"add",Toast.LENGTH_SHORT).show();
     }
 }

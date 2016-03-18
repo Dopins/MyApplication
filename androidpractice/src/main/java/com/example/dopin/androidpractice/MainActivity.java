@@ -88,9 +88,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         meButton.setBackgroundResource(R.drawable.user);
 
         weChatText.setTextColor(getResources().getColor(R.color.blue));
-        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
-        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
-        meText.setTextColor(getResources().getColor(R.color.darkGray));
+        address_listText.setTextColor(getResources().getColor(R.color.gray));
+        discoveryText.setTextColor(getResources().getColor(R.color.gray));
+        meText.setTextColor(getResources().getColor(R.color.gray));
     }
     private void turnAddress_book(){
         weChatButton.setBackgroundResource(R.drawable.message);
@@ -99,9 +99,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         meButton.setBackgroundResource(R.drawable.user);
 
         address_listText.setTextColor(getResources().getColor(R.color.blue));
-        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
-        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
-        meText.setTextColor(getResources().getColor(R.color.darkGray));
+        weChatText.setTextColor(getResources().getColor(R.color.gray));
+        discoveryText.setTextColor(getResources().getColor(R.color.gray));
+        meText.setTextColor(getResources().getColor(R.color.gray));
     }
     private void turnDiscovery(){
         weChatButton.setBackgroundResource(R.drawable.message);
@@ -110,9 +110,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         meButton.setBackgroundResource(R.drawable.user);
 
         discoveryText.setTextColor(getResources().getColor(R.color.blue));
-        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
-        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
-        meText.setTextColor(getResources().getColor(R.color.darkGray));
+        address_listText.setTextColor(getResources().getColor(R.color.gray));
+        weChatText.setTextColor(getResources().getColor(R.color.gray));
+        meText.setTextColor(getResources().getColor(R.color.gray));
     }
     private void turnMe(){
         weChatButton.setBackgroundResource(R.drawable.message);
@@ -121,10 +121,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
         meButton.setBackgroundResource(R.drawable.user_blue);
 
         meText.setTextColor(getResources().getColor(R.color.blue));
-        address_listText.setTextColor(getResources().getColor(R.color.darkGray));
-        discoveryText.setTextColor(getResources().getColor(R.color.darkGray));
-        weChatText.setTextColor(getResources().getColor(R.color.darkGray));
+        address_listText.setTextColor(getResources().getColor(R.color.gray));
+        discoveryText.setTextColor(getResources().getColor(R.color.gray));
+        weChatText.setTextColor(getResources().getColor(R.color.gray));
     }
+
     public void find(View view){
         Toast.makeText(this, "find", Toast.LENGTH_SHORT).show();
     }

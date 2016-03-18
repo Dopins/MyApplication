@@ -8,6 +8,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ public class MessageActivity extends Activity {
         setContentView(R.layout.activity_message);
         Intent intent=getIntent();
         String name=intent.getStringExtra("name");
+        TextView nameText=(TextView)findViewById(R.id.name);
+        nameText.setText(name);
         initMsgs();
         adapter=new MsgAdapter(this,R.layout.msg_item,msgList);
         msgListView=(ListView)findViewById(R.id.msg_list_view);
@@ -35,9 +39,9 @@ public class MessageActivity extends Activity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content=inputText.getText().toString();
-                if(!content.equals("")){
-                    Msg msg=new Msg(content,Msg.TYPE_SEND);
+                String content = inputText.getText().toString();
+                if (!content.equals("")) {
+                    Msg msg = new Msg(content, Msg.TYPE_SEND);
                     msgList.add(msg);
                     adapter.notifyDataSetChanged();
                     msgListView.setSelection(msgList.size());
@@ -49,5 +53,11 @@ public class MessageActivity extends Activity {
     private void initMsgs(){
         Msg msg=new Msg("Hello!",Msg.TYPE_RECEIVED);
         msgList.add(msg);
+    }
+    public void back(View view){
+        finish();
+    }
+    public void user(View view){
+        Toast.makeText(this,"user",Toast.LENGTH_SHORT).show();
     }
 }

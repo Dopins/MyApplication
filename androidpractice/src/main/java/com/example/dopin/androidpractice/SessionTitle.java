@@ -14,27 +14,6 @@ import android.widget.Toast;
 public class SessionTitle extends LinearLayout {
     public SessionTitle(Context context,AttributeSet attrs){
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.index_title, this);
-        Button back=(Button)findViewById(R.id.findButton);
-        Button user=(Button)findViewById(R.id.addButton);
-        back.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                back();
-            }
-        });
-        user.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                user();
-            }
-        });
-
-    }
-    public void back(){
-
-    }
-    public void user(){
-        Toast.makeText(getContext(),"add",Toast.LENGTH_SHORT).show();
+        LayoutInflater.from(context).inflate(R.layout.session_title, this);
     }
 }
