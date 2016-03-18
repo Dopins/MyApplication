@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/blue"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/back"
+        android:onClick="back"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/back"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+
+
+    <FrameLayout
+        android:id="@+id/user"
+        android:onClick="user"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/userButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/user_white"/>
+    </FrameLayout>
+
+
+
+</LinearLayout>

@@ -6,6 +6,11 @@
     android:background="#d8e0e8"
     android:orientation="vertical"
     tools:context="com.example.dopin.androidpractice.MessageActivity">
+    <com.example.dopin.androidpractice.SessionTitle
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.example.dopin.androidpractice.SessionTitle>
 <ListView
     android:id="@+id/msg_list_view"
     android:layout_width="match_parent"
