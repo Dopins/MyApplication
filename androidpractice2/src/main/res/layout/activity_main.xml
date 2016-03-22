@@ -22,8 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="#fff"
-                >
+                android:background="#ffffff"
+                android:divider="#f5f5ff"
+                android:dividerHeight="20px"
+            >
             </ListView>
         </LinearLayout>
     </LinearLayout>
