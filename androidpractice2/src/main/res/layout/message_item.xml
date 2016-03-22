@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,19 +11,26 @@
             android:ellipsize="end"
             android:id="@+id/title"
             android:layout_gravity="left"
-            android:layout_margin="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="17sp"
+            android:textColor="#181818"
             android:textStyle="bold"
             android:maxLines="2"/>
         <TextView
             android:id="@+id/content"
             android:ellipsize="end"
             android:gravity="left"
-            android:textSize="15sp"
+            android:textColor="#302f2f"
+            android:textSize="14sp"
             android:maxLines="4"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

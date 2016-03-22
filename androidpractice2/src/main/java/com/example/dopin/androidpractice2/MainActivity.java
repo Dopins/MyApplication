@@ -37,7 +37,24 @@ public class MainActivity extends Activity {
         });
     }
     private void initMsgList(){
-
+        Message msg1=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？",
+                "“站在风口上，猪都能飞”——可是当风口站满了猪，还飞的起来吗？2015年，在华为的冲击下，" +
+                        "小米显得有点狼狈。曾经，小米的品牌附着力核心源于“性价比”，但越来越多的国内品牌在这条路上杀得兴起，" +
+                        "小米发现，对自己的定位确实很尴尬，他们正在失去对粉丝的吸引力."
+                );
+        Message msg2=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        Message msg3=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        Message msg4=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        Message msg5=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        Message msg6=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        Message msg7=new Message("如何看待雷军和董明珠要同时进入电饭煲领域？","");
+        msgList.add(msg1);
+        msgList.add(msg2);
+        msgList.add(msg3);
+        msgList.add(msg4);
+        msgList.add(msg5);
+        msgList.add(msg6);
+        msgList.add(msg7);
     }
     public void find(View view){
         Toast.makeText(this, "find", Toast.LENGTH_SHORT).show();
