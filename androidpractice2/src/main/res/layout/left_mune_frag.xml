@@ -2,15 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ListView
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="left"
-        android:gravity="start"
-        android:id="@+id/drawer_content"/>
-</LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@drawable/background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/user"
+                android:layout_margin="10dp"
+                android:background="@drawable/user"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <ImageButton
+                android:background="@drawable/logout"
+                android:id="@+id/sign_out"
+                android:layout_margin="20dp"
+
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+        </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:background="#fff"
+            android:layout_gravity="left"
+            android:gravity="start"
+            android:id="@+id/drawer_content"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+            <Button
+                android:id="@+id/btn_theme"
+                android:text="   切换主题"
+                android:gravity="left|center_vertical"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/btn_setting"
+                android:text="   设置"
+                android:gravity="left|center_vertical"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>

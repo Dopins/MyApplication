@@ -11,9 +11,9 @@
 
     </LinearLayout>
     <fragment
-        android:layout_width="240dp"
+        android:layout_width="310dp"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="#fff"
         android:layout_gravity="left"
         android:gravity="start"
         android:layout_weight="1"
