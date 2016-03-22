@@ -6,15 +6,29 @@
     android:id="@+id/drawer_layout"
     >
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.example.dopin.androidpractice2.IndexTitle
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.example.dopin.androidpractice2.IndexTitle>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/msg_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#fff"
+                >
+            </ListView>
+        </LinearLayout>
     </LinearLayout>
     <fragment
-        android:layout_width="310dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:background="#fff"
         android:layout_gravity="left"
