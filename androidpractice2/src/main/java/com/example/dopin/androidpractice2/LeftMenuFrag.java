@@ -10,37 +10,41 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dopin on 2016/3/22.
  */
 
 public class LeftMenuFrag extends Fragment {
-    private ArrayList<String> arrayList;
 
-    private ListView mListView;
-    private ArrayAdapter<String> adapter;
-    private ImageView item_image;
+    private List<Item> itemList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.left_mune_frag,container,false);
-
-        mListView = (ListView)view.findViewById(R.id.drawer_content);
-        item_image=(ImageView)view.findViewById(R.id.item_image);
+        itemList=new ArrayList<Item>();
         initMenuList();
+        MenuAdapter adapter = new MenuAdapter(getActivity(),R.layout.menu_item,itemList);
+        ListView mListView = (ListView)view.findViewById(R.id.item_list_view);
+        mListView.setAdapter(adapter);
         return view;
     }
     private void initMenuList() {
 
-        arrayList = new ArrayList<String>();
-        arrayList.add("首页");
-        arrayList.add("发现");
-        arrayList.add("关注");
-        arrayList.add("收藏");
-        arrayList.add("圆桌");
-        arrayList.add("私信");
-        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.menu_item, arrayList);
-        mListView.setAdapter(adapter);
+        Item home=new Item("首页",R.drawable.setting);
+        Item discovery=new Item("发现",R.drawable.discovery);
+        Item follow=new Item("关注",R.drawable.eye);
+        Item collection=new Item("收藏",R.drawable.label);
+        Item table=new Item("圆桌",R.drawable.table);
+        Item message=new Item("私信",R.drawable.message);
+        itemList.add(home);
+        itemList.add(discovery);
+        itemList.add(follow);
+        itemList.add(collection);
+        itemList.add(table);
+        itemList.add(message);
+
+
     }
 }
 

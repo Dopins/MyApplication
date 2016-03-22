@@ -30,7 +30,14 @@ public class MenuAdapter extends ArrayAdapter<Item> {
             viewHolder=new ViewHolder();
             viewHolder.itemImage=(ImageView)view.findViewById(R.id.item_image);
             viewHolder.itemName=(TextView)view.findViewById(R.id.item_name);
+            view.setTag(viewHolder);
+        }else{
+            view=convertView;
+            viewHolder=(ViewHolder)view.getTag();
         }
+        viewHolder.itemImage.setImageResource(item.getImageId());
+        viewHolder.itemName.setText(item.getName());
+        return view;
 
     }
     class ViewHolder{
