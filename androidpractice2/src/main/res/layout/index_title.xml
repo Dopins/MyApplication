@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="55dp"
     android:background="@color/blue"
     android:orientation="horizontal">
     <FrameLayout
@@ -13,8 +13,8 @@
         <Button
             android:id="@+id/menuButton"
             android:onClick="menu"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
             android:background="@drawable/menu"/>
     </FrameLayout>
@@ -38,8 +38,8 @@
         <Button
             android:id="@+id/findButton"
             android:onClick="find"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center"
             android:background="@drawable/find"/>
     </FrameLayout>
@@ -53,8 +53,8 @@
         <Button
             android:id="@+id/addButton"
             android:onClick="add"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center"
             android:background="@drawable/alert"
             />
