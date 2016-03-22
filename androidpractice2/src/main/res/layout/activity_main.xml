@@ -8,7 +8,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <com.example.dopin.androidpractice2.IndexTitle
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.example.dopin.androidpractice2.IndexTitle>
     </LinearLayout>
     <fragment
         android:layout_width="310dp"

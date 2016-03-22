@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/blue"
+    android:orientation="horizontal">
+<TextView
+    android:id="@+id/index_title"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="4"
+    android:gravity="center"
+    android:textColor="@color/white"
+    android:textSize="20sp"/>
+
+    <FrameLayout
+        android:id="@+id/find"
+        android:onClick="find"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/findButton"
+            android:onClick="find"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/find"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/add"
+        android:onClick="add"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/addButton"
+            android:onClick="add"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+
+            />
+    </FrameLayout>
+
+
+
+</LinearLayout>
