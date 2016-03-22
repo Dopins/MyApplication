@@ -4,12 +4,28 @@
     android:layout_height="50dp"
     android:background="@color/blue"
     android:orientation="horizontal">
-<TextView
+    <FrameLayout
+        android:id="@+id/menu"
+        android:onClick="menu"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/menuButton"
+            android:onClick="menu"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/menu"/>
+    </FrameLayout>
+
+    <TextView
     android:id="@+id/index_title"
     android:layout_width="0dp"
     android:layout_height="match_parent"
     android:layout_weight="4"
-    android:gravity="center"
+    android:gravity="left|center_vertical"
+        android:text="首页"
     android:textColor="@color/white"
     android:textSize="20sp"/>
 
@@ -37,10 +53,10 @@
         <Button
             android:id="@+id/addButton"
             android:onClick="add"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
             android:layout_gravity="center"
-
+            android:background="@drawable/alert"
             />
     </FrameLayout>
 
