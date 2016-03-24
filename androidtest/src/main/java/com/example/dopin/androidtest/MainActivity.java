@@ -2,7 +2,6 @@ package com.example.dopin.androidtest;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -40,15 +39,14 @@ public class MainActivity extends ListActivity {
         ListView listview;
         Handler handler;
         List<Map<String, Object>> data;
-
         final String ZHIHUURL = "https://www.zhihu.com/explore";
-        final String CSDNURL="http://www.csdn.net/";
         private GoogleApiClient client;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
+
                 handler = getHandler();
                 ThreadStart();
                 // ATTENTION: This was auto-generated to implement the App Indexing API.
