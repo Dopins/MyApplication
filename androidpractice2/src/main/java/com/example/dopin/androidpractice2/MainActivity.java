@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -59,6 +60,7 @@ public class MainActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        titleList=new ArrayList<String>();
 
         handler = getHandler();
         ThreadStart();
@@ -100,7 +102,8 @@ public class MainActivity extends ListActivity {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("url", mr.group(1));
             map.put("title", mr.group(2));
-            titleList.add(mr.group(2).toString());
+            titleList.add((String) map.get("title"));
+            titleList.add((String) map.get("url"));
             result.add(map);
         }
         return result;
@@ -241,7 +244,7 @@ public class MainActivity extends ListActivity {
 
     public void find(View view){
         Intent intent=new Intent(MainActivity.this,SearchActivity.class);
-        intent.putStringArrayListExtra("titleList",titleList);
+        intent.putStringArrayListExtra("titleList", titleList);
         startActivity(intent);
     }
     public void add(View view){
