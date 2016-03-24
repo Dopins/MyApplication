@@ -24,13 +24,14 @@ import java.util.List;
 public class LeftMenuFrag extends Fragment implements View.OnClickListener {
 
     private List<Item> itemList;
+    private  ListView mListView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.left_mune_frag, container, false);
         itemList=new ArrayList<Item>();
         initMenuList();
         MenuAdapter adapter = new MenuAdapter(getActivity(),R.layout.menu_item,itemList);
-        ListView mListView = (ListView)view.findViewById(R.id.item_list_view);
+        mListView = (ListView)view.findViewById(R.id.item_list_view);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

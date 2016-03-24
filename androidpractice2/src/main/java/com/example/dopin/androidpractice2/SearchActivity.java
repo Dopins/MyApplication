@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import java.util.regex.Pattern;
-
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -21,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {

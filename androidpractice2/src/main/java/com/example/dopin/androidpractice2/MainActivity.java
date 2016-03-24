@@ -76,7 +76,7 @@ public class MainActivity extends ListActivity {
             public void run() {
                 Message msg = new Message();
                 try {
-                    data = getCsdnNetDate();
+                    data = getNetDate();
                     msg.what = data.size();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -90,7 +90,7 @@ public class MainActivity extends ListActivity {
     /**
      * 联网获得数据
      */
-    private List<Map<String, Object>> getCsdnNetDate() {
+    private List<Map<String, Object>> getNetDate() {
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         String ZHIHUString = http_get(ZHIHUURL);
         //Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?364");
@@ -150,8 +150,6 @@ public class MainActivity extends ListActivity {
             }
         });
     }
-
-
 
     /**
      * get请求URL，失败时尝试三次
