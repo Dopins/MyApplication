@@ -15,37 +15,41 @@
             android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp">
-            <Button
-                android:text="<"
-                android:textSize="22sp"
-                android:background="@drawable/search_shape"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"/>
             <EditText
-                android:hint=" 搜索标题"
-                android:textSize="22sp"
+                android:id="@+id/edit_title"
+                android:hint="  搜索标题"
+                android:textSize="20sp"
                 android:background="@drawable/search_shape"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_weight="4"/>
+            <Button
+                android:id="@+id/btn_find"
+                android:background="@drawable/find"
+                android:layout_marginLeft="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                />
     </LinearLayout>
     <TextView
         android:text="搜索历史"
         android:textSize="22sp"
         android:textColor="@color/white"
-        android:layout_margin="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10">
+        android:layout_weight="8">
         <ListView
-            android:background="@color/white"
+            android:id="@+id/history_list"
+            android:background="@color/light_gray"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </ListView>
     </LinearLayout>
 </LinearLayout>
