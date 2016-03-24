@@ -2,6 +2,7 @@ package com.example.dopin.androidtest;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import android.os.Bundle;
@@ -40,7 +41,8 @@ public class MainActivity extends ListActivity {
         Handler handler;
         List<Map<String, Object>> data;
 
-        final String CSDNURL = "http://www.csdn.net/";
+        final String ZHIHUURL = "https://www.zhihu.com/explore";
+        final String CSDNURL="http://www.csdn.net/";
         private GoogleApiClient client;
 
         @Override
@@ -78,16 +80,17 @@ public class MainActivity extends ListActivity {
          */
         private List<Map<String, Object>> getCsdnNetDate() {
                 List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-                String csdnString = http_get(CSDNURL);
-                //<li><a title="(.*?)" href="(.*?)" target="_blank" onclick="LogClickCount\(this,363\);">\1</a></li>
-                //title="(.*?)" href="(.*?)".*?,363\)
-                Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?363");
-                Matcher m = p.matcher(csdnString);
+                String ZHIHUString = http_get(ZHIHUURL);
+                //Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?364");
+
+                String strPattern="<h2><a class=\"question_link\" target=\"_blank\" href=\"(.*?)\">(.*?)</a></h2>";
+                Pattern p = Pattern.compile(strPattern);
+                Matcher m = p.matcher(ZHIHUString);
                 while (m.find()) {
                         MatchResult mr = m.toMatchResult();
                         Map<String, Object> map = new HashMap<String, Object>();
-                        map.put("title", mr.group(1));
-                        map.put("url", mr.group(2));
+                        map.put("url", mr.group(1));
+                        map.put("title", mr.group(2));
                         result.add(map);
                 }
                 return result;
@@ -108,21 +111,24 @@ public class MainActivity extends ListActivity {
                 };
         }
 
+
         /**
          * 在listview里显示数据
          */
         private void initListview() {
                 listview=(ListView)findViewById(android.R.id.list);
                 SimpleAdapter adapter = new SimpleAdapter(this, data,
-                        android.R.layout.simple_list_item_1, new String[]{"title"},
-                        new int[]{android.R.id.text1});
+                        R.layout.message_item, new String[]{"title"},
+                        new int[]{R.id.title});
                 listview.setAdapter(adapter);
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                                 long arg3) {
                                 Map<String, Object> map = data.get(arg2);
-                                String url = (String) (map.get("url"));
+
+                                String url = "https://www.zhihu.com"+(map.get("url"));
+
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
                                 intent.setData(Uri.parse(url));
                                 startActivity(intent);
