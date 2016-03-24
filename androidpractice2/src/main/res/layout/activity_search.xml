@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    android:orientation="vertical"
+    tools:context="com.example.dopin.androidpractice2.SearchActivity">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+            <Button
+                android:text="<"
+                android:textSize="22sp"
+                android:background="@drawable/search_shape"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
+            <EditText
+                android:hint=" 搜索标题"
+                android:textSize="22sp"
+                android:background="@drawable/search_shape"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="4"/>
+    </LinearLayout>
+    <TextView
+        android:text="搜索历史"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10">
+        <ListView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

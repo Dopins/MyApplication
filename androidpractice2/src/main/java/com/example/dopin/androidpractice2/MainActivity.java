@@ -1,7 +1,6 @@
 package com.example.dopin.androidpractice2;
-import android.app.Activity;
-
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,11 +11,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import android.os.Message;
-
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -47,7 +46,10 @@ public class MainActivity extends ListActivity {
     ListView listview;
     Handler handler;
     List<Map<String, Object>> data;
-    final String ZHIHUURL = "https://www.zhihu.com/explore";
+    ArrayList<String> titleList;
+    private ProgressBar progressBar;
+    final String ZHIHUURL = "https://www.zhihu.com/explore/recommendations";
+    final String strPattern="<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>";
     private GoogleApiClient client;
 
     private  DrawerLayout mDrawerLayout;
@@ -91,7 +93,6 @@ public class MainActivity extends ListActivity {
         String ZHIHUString = http_get(ZHIHUURL);
         //Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?364");
 
-        String strPattern="<h2><a class=\"question_link\" target=\"_blank\" href=\"(.*?)\">(.*?)</a></h2>";
         Pattern p = Pattern.compile(strPattern);
         Matcher m = p.matcher(ZHIHUString);
         while (m.find()) {
@@ -99,6 +100,7 @@ public class MainActivity extends ListActivity {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("url", mr.group(1));
             map.put("title", mr.group(2));
+            titleList.add(mr.group(2).toString());
             result.add(map);
         }
         return result;
@@ -124,6 +126,8 @@ public class MainActivity extends ListActivity {
      * 在listview里显示数据
      */
     private void initListview() {
+        progressBar=(ProgressBar)findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
         listview=(ListView)findViewById(android.R.id.list);
         SimpleAdapter adapter = new SimpleAdapter(this, data,
                 R.layout.message_item, new String[]{"title"},
@@ -236,7 +240,9 @@ public class MainActivity extends ListActivity {
     }
 
     public void find(View view){
-        Toast.makeText(this, "find", Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+        intent.putStringArrayListExtra("titleList",titleList);
+        startActivity(intent);
     }
     public void add(View view){
         Toast.makeText(this,"alert",Toast.LENGTH_SHORT).show();
