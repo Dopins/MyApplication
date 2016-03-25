@@ -50,8 +50,6 @@ public class MainActivity extends ListActivity {
     List<Map<String, Object>> data;
     ArrayList<String> titleList;
     private ProgressBar progressBar;
-    final String ZHIHUURL = "https://www.zhihu.com/explore/recommendations";
-    final String strPattern="<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>";
     private GoogleApiClient client;
 
     private  DrawerLayout mDrawerLayout;
@@ -61,12 +59,15 @@ public class MainActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        final String ZHIHUURL = "https://www.zhihu.com/explore/recommendations";
+        final String strPattern="<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>";
+
         titleList=new ArrayList<String>();
         TextView titleView=(TextView)findViewById(R.id.index_title);
         titleView.setText("首页");
 
         handler = getHandler();
-        ThreadStart();
+        ThreadStart(ZHIHUURL,strPattern);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -74,12 +75,12 @@ public class MainActivity extends ListActivity {
     /**
      * 新开辟线程处理联网操作
      */
-    private void ThreadStart() {
+    private void ThreadStart(final String url,final String strPattern) {
         new Thread() {
             public void run() {
                 Message msg = new Message();
                 try {
-                    data = getNetDate();
+                    data = getNetDate(url,strPattern);
                     msg.what = data.size();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -93,9 +94,9 @@ public class MainActivity extends ListActivity {
     /**
      * 联网获得数据
      */
-    private List<Map<String, Object>> getNetDate() {
+    private List<Map<String, Object>> getNetDate(String url,String strPattern) {
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        String ZHIHUString = http_get(ZHIHUURL);
+        String ZHIHUString = http_get(url);
         //Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?364");
 
         Pattern p = Pattern.compile(strPattern);
