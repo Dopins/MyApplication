@@ -83,9 +83,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                 item.setSelected(true);
-                setPage(position);
-                index=position;
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                if(position!=6) {
+                    setPage(position);
+                    index = position;
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
             }
         });
         setPage(index);
@@ -204,12 +206,12 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
      * 联网获得数据
      */
     private List<Map<String, Object>> getNetDate(String url,String strPattern) {
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        String ZHIHUString = http_get(url);
-        //Pattern p = Pattern.compile("title=\"(.*?)\" href=\"(.*?)\".*?364");
+        titleList.clear();
 
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        String URL = http_get(url);
         Pattern p = Pattern.compile(strPattern);
-        Matcher m = p.matcher(ZHIHUString);
+        Matcher m = p.matcher(URL);
         while (m.find()) {
             MatchResult mr = m.toMatchResult();
             Map<String, Object> map = new HashMap<String, Object>();
