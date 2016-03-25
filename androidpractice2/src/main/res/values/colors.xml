@@ -3,7 +3,9 @@
     <color name="gray">#979797</color>
     <color name="white">#ffffff</color>
     <color name="blue">#0f7aed</color>
+    <color name="light_blue">#a6edef</color>
     <color name="light_gray">#efefef</color>
+    <color name="menu_item">#1a1919</color>
 
     <color name="home_color">#1d79c0</color>
     <color name="discovery_color">#47a9f4</color>

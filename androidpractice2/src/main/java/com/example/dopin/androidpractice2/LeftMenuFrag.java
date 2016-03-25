@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,29 +25,44 @@ import java.util.List;
 
 public class LeftMenuFrag extends Fragment implements View.OnClickListener {
 
+
     private List<Item> itemList;
     private  ListView mListView;
+    private View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.left_mune_frag, container, false);
+        if (null != view) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (null != parent) {
+                parent.removeView(view);
+            }
+        } else {
+            view = inflater.inflate(R.layout.left_mune_frag, container, false);
+            initView(view);// 控件初始化
+        }
+        return view;
+
+    }
+    private void  initView(View view){
         itemList=new ArrayList<Item>();
         initMenuList();
         MenuAdapter adapter = new MenuAdapter(getActivity(),R.layout.menu_item,itemList);
         mListView = (ListView)view.findViewById(R.id.item_list_view);
         mListView.setAdapter(adapter);
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Item item = itemList.get(position);
-                Toast.makeText(getActivity(), item.getName(), Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+
+                item.setSelected(true);
+                Item menuitem = itemList.get(position);
+                Toast.makeText(getActivity(), menuitem.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         view.findViewById(R.id.btn_setting).setOnClickListener(this);
         view.findViewById(R.id.btn_theme).setOnClickListener(this);
         view.findViewById(R.id.user).setOnClickListener(this);
         view.findViewById(R.id.sign_out).setOnClickListener(this);
-
-        return view;
     }
     @Override
     public void onClick(View v) {
@@ -81,8 +98,6 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener {
         itemList.add(collection);
         itemList.add(table);
         itemList.add(message);
-
-
     }
 }
 
