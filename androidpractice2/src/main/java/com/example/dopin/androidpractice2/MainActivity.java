@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -43,8 +44,9 @@ import java.util.regex.Pattern;
 
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener  {
 
+    private SwipeRefreshLayout mSwipeLayout;
     private List<Item> itemList;
     private  ListView mListView;
     ListView listview;
@@ -52,9 +54,9 @@ public class MainActivity extends ListActivity {
     List<Map<String, Object>> data;
     List<Map<String, String>> httpList;
     ArrayList<String> titleList;
-    private ProgressBar progressBar;
     private GoogleApiClient client;
     private  DrawerLayout mDrawerLayout;
+    private int index=0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,11 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorSchemeResources(R.color.blue);
+
 
         titleList=new ArrayList<String>();
         httpList=new ArrayList<Map<String, String>>();
@@ -77,10 +84,16 @@ public class MainActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                 item.setSelected(true);
                 setPage(position);
+                index=position;
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
             }
         });
-        setPage(0);
+        setPage(index);
+    }
+
+    @Override
+    public void onRefresh(){
+        setPage(index);
     }
     private void initMenuList() {
 
@@ -126,6 +139,7 @@ public class MainActivity extends ListActivity {
     }
 
     public void setPage(int index){
+        mSwipeLayout.setRefreshing(true);
         TextView titleView=(TextView)findViewById(R.id.index_title);
 
         Map<String,String> map;
@@ -228,8 +242,8 @@ public class MainActivity extends ListActivity {
      * 在listview里显示数据
      */
     private void initListview() {
-        progressBar=(ProgressBar)findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.GONE);
+        mSwipeLayout.setRefreshing(false);
+
         listview=(ListView)findViewById(android.R.id.list);
         SimpleAdapter adapter = new SimpleAdapter(this, data,
                 R.layout.message_item, new String[]{"title"},

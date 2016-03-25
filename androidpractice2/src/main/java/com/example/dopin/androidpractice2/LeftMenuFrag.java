@@ -42,6 +42,7 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener {
         }
         return view;
     }
+
     private void  initView(View view){
         view.findViewById(R.id.btn_setting).setOnClickListener(this);
         view.findViewById(R.id.btn_theme).setOnClickListener(this);
