@@ -45,6 +45,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity {
 
+    private List<Item> itemList;
+    private  ListView mListView;
     ListView listview;
     Handler handler;
     List<Map<String, Object>> data;
@@ -52,7 +54,6 @@ public class MainActivity extends ListActivity {
     ArrayList<String> titleList;
     private ProgressBar progressBar;
     private GoogleApiClient client;
-
     private  DrawerLayout mDrawerLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +61,41 @@ public class MainActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        titleList=new ArrayList<String>();
+        httpList=new ArrayList<Map<String, String>>();
         setHttpList();
-        setPage();
+
+        itemList=new ArrayList<Item>();
+        initMenuList();
+        MenuAdapter adapter = new MenuAdapter(this,R.layout.menu_item,itemList);
+        mListView = (ListView)findViewById(R.id.item_list_view);
+        mListView.setAdapter(adapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+                item.setSelected(true);
+                setPage(position);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+            }
+        });
+        setPage(0);
+    }
+    private void initMenuList() {
+
+        Item home=new Item("首页",R.drawable.setting);
+        Item discovery=new Item("发现",R.drawable.discovery);
+        Item follow=new Item("关注",R.drawable.eye);
+        Item collection=new Item("收藏",R.drawable.label);
+        Item table=new Item("圆桌",R.drawable.table);
+        Item message=new Item("私信",R.drawable.message);
+        itemList.add(home);
+        itemList.add(discovery);
+        itemList.add(follow);
+        itemList.add(collection);
+        itemList.add(table);
+        itemList.add(message);
     }
     private void setHttpList(){
         Map<String,String> httpMap1=new HashMap<>();
@@ -83,53 +116,43 @@ public class MainActivity extends ListActivity {
 
         Map<String,String> httpMap5=new HashMap<>();
         httpMap5.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap5.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
-
-        Map<String,String> httpMap6=new HashMap<>();
-        httpMap6.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap6.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap5.put("strPattern", "<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
 
         httpList.add(httpMap1);
         httpList.add(httpMap2);
         httpList.add(httpMap3);
         httpList.add(httpMap4);
         httpList.add(httpMap5);
-        httpList.add(httpMap6);
     }
 
-    private void setPage(){
-        Intent intent=getIntent();
-        String temp=intent.getStringExtra("index");
-        int index;
-        if(temp==null) {
-            index=0;
-        }else{
-             index=Integer.valueOf(temp);
-        }
+    public void setPage(int index){
+        TextView titleView=(TextView)findViewById(R.id.index_title);
+
         Map<String,String> map;
         switch (index){
             case 0:
+                titleView.setText("首页");
                  map=httpList.get(0);
                 ceratPage(map.get("url"),map.get("strPattern"));
                 break;
             case 1:
+                titleView.setText("发现");
                  map=httpList.get(1);
                 ceratPage(map.get("url"),map.get("strPattern"));
                 break;
             case 2:
+                titleView.setText("关注");
                  map=httpList.get(2);
                 ceratPage(map.get("url"),map.get("strPattern"));
                 break;
             case 3:
+                titleView.setText("收藏");
                  map=httpList.get(3);
                 ceratPage(map.get("url"),map.get("strPattern"));
                 break;
             case 4:
+                titleView.setText("圆桌");
                  map=httpList.get(4);
-                ceratPage(map.get("url"),map.get("strPattern"));
-                break;
-            case 5:
-                 map=httpList.get(5);
                 ceratPage(map.get("url"),map.get("strPattern"));
                 break;
             default:
@@ -137,16 +160,11 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    private void ceratPage(String url,String strPattern){
-        titleList=new ArrayList<String>();
-        TextView titleView=(TextView)findViewById(R.id.index_title);
-        titleView.setText("首页");
-
+    private  void ceratPage(String url,String strPattern){
         handler = getHandler();
         ThreadStart(url,strPattern);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -326,7 +344,7 @@ public class MainActivity extends ListActivity {
         intent.putStringArrayListExtra("titleList", titleList);
         startActivity(intent);
     }
-    public void add(View view){
+    public void message(View view){
         Toast.makeText(this,"alert",Toast.LENGTH_SHORT).show();
     }
     public void menu(View view){
