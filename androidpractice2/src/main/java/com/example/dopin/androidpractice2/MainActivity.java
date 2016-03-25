@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.os.Message;
@@ -61,6 +62,8 @@ public class MainActivity extends ListActivity {
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
         titleList=new ArrayList<String>();
+        TextView titleView=(TextView)findViewById(R.id.index_title);
+        titleView.setText("首页");
 
         handler = getHandler();
         ThreadStart();

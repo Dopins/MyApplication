@@ -45,7 +45,10 @@ public class SearchActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String title=edit_title.getText().toString();
-                if(title.equals("")) return;
+                if(title.equals("")) {
+                    Toast.makeText(SearchActivity.this, "请输入关键词", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 boolean match=false;
                 Pattern pattern;
                 Matcher matcher;
