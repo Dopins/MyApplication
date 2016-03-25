@@ -48,6 +48,7 @@ public class MainActivity extends ListActivity {
     ListView listview;
     Handler handler;
     List<Map<String, Object>> data;
+    List<Map<String, String>> httpList;
     ArrayList<String> titleList;
     private ProgressBar progressBar;
     private GoogleApiClient client;
@@ -59,19 +60,95 @@ public class MainActivity extends ListActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
-        final String ZHIHUURL = "https://www.zhihu.com/explore/recommendations";
-        final String strPattern="<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>";
 
+        setHttpList();
+        setPage();
+    }
+    private void setHttpList(){
+        Map<String,String> httpMap1=new HashMap<>();
+        httpMap1.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap1.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        Map<String,String> httpMap2=new HashMap<>();
+        httpMap2.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap2.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        Map<String,String> httpMap3=new HashMap<>();
+        httpMap3.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap3.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        Map<String,String> httpMap4=new HashMap<>();
+        httpMap4.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap4.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        Map<String,String> httpMap5=new HashMap<>();
+        httpMap5.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap5.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        Map<String,String> httpMap6=new HashMap<>();
+        httpMap6.put("url","https://www.zhihu.com/explore/recommendations");
+        httpMap6.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+
+        httpList.add(httpMap1);
+        httpList.add(httpMap2);
+        httpList.add(httpMap3);
+        httpList.add(httpMap4);
+        httpList.add(httpMap5);
+        httpList.add(httpMap6);
+    }
+
+    private void setPage(){
+        Intent intent=getIntent();
+        String temp=intent.getStringExtra("index");
+        int index;
+        if(temp==null) {
+            index=0;
+        }else{
+             index=Integer.valueOf(temp);
+        }
+        Map<String,String> map;
+        switch (index){
+            case 0:
+                 map=httpList.get(0);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            case 1:
+                 map=httpList.get(1);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            case 2:
+                 map=httpList.get(2);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            case 3:
+                 map=httpList.get(3);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            case 4:
+                 map=httpList.get(4);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            case 5:
+                 map=httpList.get(5);
+                ceratPage(map.get("url"),map.get("strPattern"));
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ceratPage(String url,String strPattern){
         titleList=new ArrayList<String>();
         TextView titleView=(TextView)findViewById(R.id.index_title);
         titleView.setText("首页");
 
         handler = getHandler();
-        ThreadStart(ZHIHUURL,strPattern);
+        ThreadStart(url,strPattern);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
     /**
      * 新开辟线程处理联网操作
      */

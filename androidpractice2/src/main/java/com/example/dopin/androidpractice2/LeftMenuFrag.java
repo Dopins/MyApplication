@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,6 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener {
             initView(view);// 控件初始化
         }
         return view;
-
     }
     private void  initView(View view){
         itemList=new ArrayList<Item>();
