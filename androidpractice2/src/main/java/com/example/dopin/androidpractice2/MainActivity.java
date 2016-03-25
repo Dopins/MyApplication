@@ -300,6 +300,13 @@ public class MainActivity extends ListActivity {
     }
 
     @Override
+    public void onBackPressed(){
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+            mDrawerLayout.closeDrawers();
+        }else super.onBackPressed();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
