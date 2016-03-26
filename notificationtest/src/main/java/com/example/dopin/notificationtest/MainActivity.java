@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
                 notification = builder.setContentIntent(pendingIntent).setContentTitle("title").
                         setContentText("text").build();
+               notification.defaults=Notification.DEFAULT_ALL;
+
                 manager.notify(1, notification);
                 break;
             default:

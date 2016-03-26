@@ -97,6 +97,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void onRefresh(){
         setPage(index);
     }
+
     private void initMenuList() {
 
         Item home=new Item("首页",R.drawable.setting);
@@ -149,38 +150,36 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             case 0:
                 titleView.setText("首页");
                  map=httpList.get(0);
-                ceratPage(map.get("url"),map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"));
                 break;
             case 1:
                 titleView.setText("发现");
                  map=httpList.get(1);
-                ceratPage(map.get("url"),map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"));
                 break;
             case 2:
                 titleView.setText("关注");
                  map=httpList.get(2);
-                ceratPage(map.get("url"),map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"));
                 break;
             case 3:
                 titleView.setText("收藏");
                  map=httpList.get(3);
-                ceratPage(map.get("url"),map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"));
                 break;
             case 4:
                 titleView.setText("圆桌");
                  map=httpList.get(4);
-                ceratPage(map.get("url"),map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"));
                 break;
             default:
                 break;
         }
     }
 
-    private  void ceratPage(String url,String strPattern){
-        handler = getHandler();
-        ThreadStart(url,strPattern);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+    private  void createPage(String url,String strPattern){
+        handler = getHandler();//处理message
+        ThreadStart(url,strPattern);//开启线程
     }
 
     /**
@@ -201,12 +200,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             }
         }.start();
     }
-
     /**
      * 联网获得数据
      */
     private List<Map<String, Object>> getNetDate(String url,String strPattern) {
-        titleList.clear();
+        titleList.clear();//title只存储当前列表的数据，启动新的createPage时清空titleList
 
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         String URL = http_get(url);
@@ -253,12 +251,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-                Map<String, Object> map = data.get(arg2);
-
+            public void onItemClick(AdapterView<?> parent, View item, int position,
+                                    long id) {
+                Map<String, Object> map = data.get(position);
                 String url = "https://www.zhihu.com"+(map.get("url"));
-
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
@@ -325,16 +321,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Main Page", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app deep link URI is correct.
                 Uri.parse("android-app://com.example.dopin.androidpractice2/http/host/path")
@@ -345,15 +336,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Main Page", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app deep link URI is correct.
                 Uri.parse("android-app://com.example.dopin.androidpractice2/http/host/path")
