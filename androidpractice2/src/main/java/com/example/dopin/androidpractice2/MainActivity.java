@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener  {
 
+    private TextView titleView;
     private SwipeRefreshLayout mSwipeLayout;
     private List<Item> itemList;
     private  ListView mListView;
@@ -83,11 +84,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                 item.setSelected(true);
-                if(position!=6) {
-                    setPage(position);
-                    index = position;
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-                }
+                setPage(position);
+                index = position;
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+
             }
         });
         setPage(index);
@@ -100,12 +100,12 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
     private void initMenuList() {
 
-        Item home=new Item("首页",R.drawable.setting);
-        Item discovery=new Item("发现",R.drawable.discovery);
-        Item follow=new Item("关注",R.drawable.eye);
-        Item collection=new Item("收藏",R.drawable.label);
-        Item table=new Item("圆桌",R.drawable.table);
-        Item message=new Item("私信",R.drawable.message);
+        Item home=new Item("知乎·日报",R.drawable.zhihu);
+        Item discovery=new Item("果壳·科学人",R.drawable.guoke);
+        Item follow=new Item("译言·精选",R.drawable.yiyan);
+        Item collection=new Item("虎嗅·资讯",R.drawable.huxiu);
+        Item table=new Item("十五言·推荐",R.drawable.shiwuyan);
+        Item message=new Item("豆瓣阅读·专栏",R.drawable.douban);
         itemList.add(home);
         itemList.add(discovery);
         itemList.add(follow);
@@ -115,83 +115,100 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
     private void setHttpList(){
         Map<String,String> httpMap1=new HashMap<>();
-        httpMap1.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap1.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap1.put("url","http://daily.zhihu.com/");
+        httpMap1.put("strPattern","<a href=\"(.*?)\" class=\"link-button\">.*?<span class=\"title\">(.*?)</span></a>");
+        httpMap1.put("UrlHead","http://daily.zhihu.com");
 
         Map<String,String> httpMap2=new HashMap<>();
-        httpMap2.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap2.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap2.put("url","http://www.guokr.com/scientific/");
+        httpMap2.put("strPattern","<a class=\"article-title\" href=\"(.*?)\" target=\"_blank\" data-gaevent=.*?>(.*?)</a>");
+        httpMap2.put("UrlHead","");
 
         Map<String,String> httpMap3=new HashMap<>();
-        httpMap3.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap3.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap3.put("url","http://select.yeeyan.org/");
+        httpMap3.put("strPattern","<a target=\"_blank\" href=\"(.*?)\">(.*?)</a>");
+        httpMap3.put("UrlHead","");
 
         Map<String,String> httpMap4=new HashMap<>();
-        httpMap4.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap4.put("strPattern","<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap4.put("url","http://www.huxiu.com/business");
+        httpMap4.put("strPattern","<a href=\"(.*?)\" class=\"transition\" target=\"_blank\">(.*?)</a>");
+        httpMap4.put("UrlHead", "http://www.huxiu.com");
 
         Map<String,String> httpMap5=new HashMap<>();
-        httpMap5.put("url","https://www.zhihu.com/explore/recommendations");
-        httpMap5.put("strPattern", "<h2><a class=\"question_link\" href=\"(.*?)\">(.*?)</a></h2>");
+        httpMap5.put("url","http://www.15yan.com/topic/shi-wu-yan-chuang-kou-wen-zhang-ku/trending/");
+        httpMap5.put("strPattern", "<a class=\"post-item-title-edit\" href=\"(.*?)\" title=\"(.*?)\">");
+        httpMap5.put("UrlHead","http://www.15yan.com");
+
+        Map<String,String> httpMap6=new HashMap<>();
+        httpMap6.put("url","https://read.douban.com/columns/");
+        httpMap6.put("strPattern", "<a href=\"(.*?)\" class=\"chapter-title\">(.*?)</a>");
+        httpMap6.put("UrlHead","https://read.douban.com");
 
         httpList.add(httpMap1);
         httpList.add(httpMap2);
         httpList.add(httpMap3);
         httpList.add(httpMap4);
         httpList.add(httpMap5);
+        httpList.add(httpMap6);
     }
 
     public void setPage(int index){
         mSwipeLayout.setRefreshing(true);
-        TextView titleView=(TextView)findViewById(R.id.index_title);
+        titleView=(TextView)findViewById(R.id.index_title);
 
         Map<String,String> map;
         switch (index){
             case 0:
-                titleView.setText("首页");
+                titleView.setText("知乎·日报");
                  map=httpList.get(0);
-                createPage(map.get("url"), map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"), map.get("UrlHead"));
+
                 break;
             case 1:
-                titleView.setText("发现");
+                titleView.setText("果壳·科学人");
                  map=httpList.get(1);
-                createPage(map.get("url"), map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 2:
-                titleView.setText("关注");
+                titleView.setText("译言·精选");
                  map=httpList.get(2);
-                createPage(map.get("url"), map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 3:
-                titleView.setText("收藏");
+                titleView.setText("虎嗅·资讯");
                  map=httpList.get(3);
-                createPage(map.get("url"), map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 4:
-                titleView.setText("圆桌");
+                titleView.setText("十五言·推荐");
                  map=httpList.get(4);
-                createPage(map.get("url"), map.get("strPattern"));
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
+                break;
+            case 5:
+                titleView.setText("豆瓣阅读·专栏");
+                map=httpList.get(5);
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             default:
                 break;
         }
     }
-
-    private  void createPage(String url,String strPattern){
+    private  void createPage(String url,String strPattern,String urlHead){
         handler = getHandler();//处理message
-        ThreadStart(url,strPattern);//开启线程
-    }
+        ThreadStart(url, strPattern, urlHead);//开启线程
 
+    }
     /**
      * 新开辟线程处理联网操作
      */
-    private void ThreadStart(final String url,final String strPattern) {
+    private void ThreadStart(final String url,final String strPattern,final String urlHead) {
         new Thread() {
             public void run() {
                 Message msg = new Message();
                 try {
-                    data = getNetDate(url,strPattern);
+                    data = getNetDate(url, strPattern, urlHead);
                     msg.what = data.size();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     msg.what = -1;
@@ -203,20 +220,22 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     /**
      * 联网获得数据
      */
-    private List<Map<String, Object>> getNetDate(String url,String strPattern) {
+    private List<Map<String, Object>> getNetDate(String url,String strPattern,String urlHead) {
         titleList.clear();//title只存储当前列表的数据，启动新的createPage时清空titleList
 
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        String URL = http_get(url);
+        String response = http_get(url);
         Pattern p = Pattern.compile(strPattern);
-        Matcher m = p.matcher(URL);
+        Matcher m = p.matcher(response);
+
         while (m.find()) {
             MatchResult mr = m.toMatchResult();
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("url", mr.group(1));
-            map.put("title", mr.group(2));
-            titleList.add((String) map.get("title"));
-            titleList.add((String) map.get("url"));
+
+                map.put("url", urlHead+mr.group(1));
+                map.put("title", mr.group(2));
+                titleList.add((String) map.get("title"));
+                titleList.add((String) map.get("url"));
             result.add(map);
         }
         return result;
@@ -254,9 +273,9 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             public void onItemClick(AdapterView<?> parent, View item, int position,
                                     long id) {
                 Map<String, Object> map = data.get(position);
-                String url = "https://www.zhihu.com"+(map.get("url"));
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
+                String url = (String)map.get("url");
+                Intent intent = new Intent(MainActivity.this,WebViewActivity.class);
+                intent.putExtra("url",url);
                 startActivity(intent);
             }
         });

@@ -76,9 +76,9 @@ public class SearchActivity extends Activity {
                         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                                 long arg3) {
                             Map<String, Object> map = data.get(arg2);
-                            String url = "https://www.zhihu.com"+(map.get("url"));
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(url));
+                            String url = (String)map.get("url");
+                            Intent intent = new Intent(SearchActivity.this,WebViewActivity.class);
+                            intent.putExtra("url", url);
                             startActivity(intent);
                         }
                     });
