@@ -5,58 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
    >
-    <LinearLayout
+<Button
+    android:id="@+id/start_service"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Start_Service"/>
+    <Button
+        android:id="@+id/stop_service"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-             android:layout_gravity="center_vertical"
-             android:padding="10dp"
-             android:text="From:"/>
-        <TextView
-            android:id="@+id/sender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-    <LinearLayout
+        android:layout_height="wrap_content"
+        android:text="Stop_Service"/>
+    <Button
+        android:id="@+id/bind_service"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="10dp"
-            android:text="Content:"/>
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-    <LinearLayout
+        android:layout_height="wrap_content"
+        android:text="Bind Service"/>
+    <Button
+        android:id="@+id/unbind_service"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="10dp"
-            android:text="to:"/>
-        <EditText
-            android:id="@+id/to"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-    <LinearLayout
+        android:layout_height="wrap_content"
+        android:text="Unbind Service"/>
+    <Button
+        android:id="@+id/start_intent_service"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <EditText
-            android:id="@+id/send"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="start intent service"/>
 </LinearLayout>
