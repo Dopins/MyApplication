@@ -57,7 +57,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     ArrayList<String> titleList;
     private GoogleApiClient client;
     private  DrawerLayout mDrawerLayout;
-    private int index=0;
+    private int index=-1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,12 +85,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                 item.setSelected(true);
                 setPage(position);
-                index = position;
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
 
             }
         });
-        setPage(index);
+        setPage(0);
     }
 
     @Override
@@ -116,7 +115,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private void setHttpList(){
         Map<String,String> httpMap1=new HashMap<>();
         httpMap1.put("url","http://daily.zhihu.com/");
-        httpMap1.put("strPattern","<a href=\"(.*?)\" class=\"link-button\">.*?<span class=\"title\">(.*?)</span></a>");
+        httpMap1.put("strPattern","<div class=\"box\"><a href=\"(.*?)\" class=\"link-button\">.*?<span class=\"title\">(.*?)</span></a>");
         httpMap1.put("UrlHead","http://daily.zhihu.com");
 
         Map<String,String> httpMap2=new HashMap<>();
@@ -141,7 +140,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         Map<String,String> httpMap6=new HashMap<>();
         httpMap6.put("url","https://read.douban.com/columns/");
-        httpMap6.put("strPattern", "<a href=\"(.*?)\" class=\"chapter-title\">(.*?)</a>");
+        httpMap6.put("strPattern", "<span class=\"chapter-title-wrapper\"><a href=\"(.*?)\" class=\"chapter-title\">(.*?)</a>");
         httpMap6.put("UrlHead","https://read.douban.com");
 
         httpList.add(httpMap1);
@@ -153,6 +152,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
 
     public void setPage(int index){
+        if(index==this.index) return;
+        this.index=index;
         mSwipeLayout.setRefreshing(true);
         titleView=(TextView)findViewById(R.id.index_title);
 
@@ -162,7 +163,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 titleView.setText("知乎·日报");
                  map=httpList.get(0);
                 createPage(map.get("url"), map.get("strPattern"), map.get("UrlHead"));
-
                 break;
             case 1:
                 titleView.setText("果壳·科学人");

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -21,7 +22,13 @@ public class WebViewActivity extends Activity {
         String url=intent.getStringExtra("url");
 
         webView=(WebView)findViewById(R.id.web_view);
-        webView.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setSupportZoom(true);
+        settings.setUseWideViewPort(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.setLoadWithOverviewMode(true);
+        settings.setDisplayZoomControls(false);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
     }
