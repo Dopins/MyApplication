@@ -152,7 +152,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
 
     public void setPage(int index){
-        if(index==this.index) return;
         this.index=index;
         mSwipeLayout.setRefreshing(true);
         titleView=(TextView)findViewById(R.id.index_title);
