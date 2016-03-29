@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="@color/light_gray" />
+   <Button
+       android:id="@+id/btn_me"
+       android:background="@color/white"
+       android:layout_width="match_parent"
+       android:layout_height="100dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/light_gray" />
+    <Button
+        android:id="@+id/btn_modify_password"
+        android:text="修改密码"
+        android:textSize="15sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray" />
+    <Button
+        android:id="@+id/btn_modify_info"
+        android:text="修改个人信息"
+        android:textSize="15sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/light_gray" />
+    <Button
+        android:id="@+id/btn_logout"
+        android:text="退出登录"
+        android:textSize="15sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray" />
+    <Button
+        android:id="@+id/btn_about"
+        android:text="关于"
+        android:textSize="15sp"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray" />
+</LinearLayout>
