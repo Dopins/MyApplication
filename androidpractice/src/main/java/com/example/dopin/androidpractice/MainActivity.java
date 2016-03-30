@@ -1,9 +1,11 @@
 package com.example.dopin.androidpractice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -14,13 +16,14 @@ import android.view.Window;
 
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity  implements View.OnClickListener{
 
+    public static String account;
     private ViewPager mViewPager;
     private int currIndex;//当前页卡编号
     private int bmpW;//横线图片宽度
@@ -43,8 +46,24 @@ public class MainActivity extends FragmentActivity  implements View.OnClickListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        Intent intent=getIntent();
+        account=intent.getStringExtra("account");
+
         initViewPager();
         initButton();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 过滤按键动作
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(true);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+        super.onBackPressed();
     }
 
     private void initViewPager(){

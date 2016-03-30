@@ -32,7 +32,7 @@
                 android:textColorHint="@color/gray"
                 android:textColor="@color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:gravity="center"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_horizontal" />
 
             <EditText
@@ -48,7 +48,7 @@
                 android:textColorHint="@color/gray"
                 android:textColor="@color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:gravity="center"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_horizontal" />
 
             <EditText
@@ -64,8 +64,52 @@
                 android:textColorHint="@color/gray"
                 android:textColor="@color/white"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:gravity="center"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_horizontal" />
+                <LinearLayout
+                    android:layout_marginTop="15dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="3"
+                        android:layout_marginRight="5dp"
+                        android:id="@+id/name"
+                        android:hint="姓名"
+                        android:background="@drawable/shape"
+                        android:singleLine="true"
+                        android:textColorHint="@color/gray"
+                        android:textColor="@color/white"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:paddingLeft="30dp"
+                        android:layout_gravity="center_horizontal" />
+                    <Spinner
+                        android:id="@+id/sex"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="10dp"
+                        android:entries="@array/sex"
+                        android:background="@drawable/shape" />
+
+                </LinearLayout>
+
+            <EditText
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/location"
+                android:hint="地区"
+                android:background="@drawable/shape"
+                android:singleLine="true"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:paddingLeft="30dp"
+                android:layout_gravity="center_horizontal" />
+
             <Button
                 android:layout_marginTop="15dp"
                 android:id="@+id/register"

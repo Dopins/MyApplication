@@ -11,7 +11,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public static final String CREAK_USER="create table User("
             + "id integer primary key autoincrement,"
             + "account text,"
-            + "password text)";
+            + "password text,"
+            + "name,"
+            + "sex,"
+            + "location)";
     private Context mContext;
     public MyDatabaseHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version){
         super(context,name,factory,version);

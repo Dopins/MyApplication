@@ -115,7 +115,7 @@ public class LoginActivity extends Activity {
                 editor.clear();
             }
             editor.commit();
-           IntentIndex();
+           IntentIndex(email);
         }
     }
 
@@ -161,8 +161,9 @@ public class LoginActivity extends Activity {
         }
         return false;
     }
-    private void IntentIndex(){
+    private void IntentIndex(String account){
         Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("account", account);
         startActivity(intent);
         finish();
     }
