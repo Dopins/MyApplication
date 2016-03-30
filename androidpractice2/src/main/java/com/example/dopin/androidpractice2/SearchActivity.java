@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
+    private  SimpleAdapter adapter;
     private ArrayList<String> titleList;
     private List<Map<String, Object>> data;
     private EditText edit_title;
@@ -34,8 +35,13 @@ public class SearchActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
 
+        init();
+    }
+
+    private void init(){
         edit_title=(EditText)findViewById(R.id.edit_title);
         btn_find=(Button)findViewById(R.id.btn_find);
+
         Intent intent=getIntent();
         titleList=intent.getStringArrayListExtra("titleList");
 
@@ -44,49 +50,67 @@ public class SearchActivity extends Activity {
         btn_find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title=edit_title.getText().toString();
-                if(title.equals("")) {
-                    Toast.makeText(SearchActivity.this, "请输入关键词", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                boolean match=false;
-                Pattern pattern;
-                Matcher matcher;
-                for(int i = 0; i<titleList.size(); i+=2){
-                    pattern = Pattern.compile(title);
-                    matcher = pattern.matcher(titleList.get(i));
-                    if(matcher.find())
-                    {
-                        match=true;
-                        Map<String, Object> map = new HashMap<String, Object>();
-                        map.put("title", titleList.get(i));
-                        map.put("url", titleList.get(i+1));
-                        data.add(map);
-                    }
-                }
-                if(match)
-                {
-                    res_list=(ListView)findViewById(android.R.id.list);
-                    SimpleAdapter adapter = new SimpleAdapter(SearchActivity.this,data,
-                            R.layout.message_item, new String[]{"title"},
-                            new int[]{R.id.title});
-                    res_list.setAdapter(adapter);
-                    res_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                                long arg3) {
-                            Map<String, Object> map = data.get(arg2);
-                            String url = (String)map.get("url");
-                            Intent intent = new Intent(SearchActivity.this,WebViewActivity.class);
-                            intent.putExtra("url", url);
-                            startActivity(intent);
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(SearchActivity.this, "没有找到此标题", Toast.LENGTH_SHORT).show();
-                }
+                found();
             }
         });
+    }
+
+    private void found(){
+        String title=edit_title.getText().toString();
+        if(title.equals("")) {
+            Toast.makeText(SearchActivity.this, "请输入关键词", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        boolean match=false;
+        Pattern pattern;
+        Matcher matcher;
+        try {
+            for(int i = 0; i<titleList.size(); i+=2) {
+                pattern = Pattern.compile(title);
+                matcher = pattern.matcher(titleList.get(i));
+                if (matcher.find()) {
+                    match = true;
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("title", titleList.get(i));
+                    map.put("url", titleList.get(i + 1));
+                    data.add(map);
+                }
+            }
+            if (match) {
+                isFound();
+            } else {
+                isNoFound();
+            }
+        } catch (Exception e) {
+                isNoFound();
+        }
+
+    }
+
+    private void isFound(){
+        res_list=(ListView)findViewById(android.R.id.list);
+        adapter = new SimpleAdapter(SearchActivity.this,data,
+                R.layout.message_item, new String[]{"title"},
+                new int[]{R.id.title});
+        res_list.setAdapter(adapter);
+        res_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                Map<String, Object> map = data.get(arg2);
+                String url = (String)map.get("url");
+                Intent intent = new Intent(SearchActivity.this,WebViewActivity.class);
+                intent.putExtra("url", url);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void isNoFound(){
+        data.clear();
+        if(adapter!=null){
+        adapter.notifyDataSetChanged();
+        }
+        Toast.makeText(SearchActivity.this, "没有找到此标题", Toast.LENGTH_SHORT).show();
     }
 }

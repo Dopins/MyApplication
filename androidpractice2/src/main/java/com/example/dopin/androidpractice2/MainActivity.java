@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -42,10 +43,12 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener  {
 
+    private TextView progressText;
+    private ProgressBar progressBar;
+    private LinearLayout titleLayout;
+    private LinearLayout progressLayout;
     private TextView titleView;
     private SwipeRefreshLayout mSwipeLayout;
     private List<Item> itemList;
@@ -58,38 +61,34 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private GoogleApiClient client;
     private  DrawerLayout mDrawerLayout;
     private int index=-1;
+    private long exitTime = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        init();
+        setHttpList();
+        initMenuList();
+        setPage(0);
+    }
+
+    private void init(){
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
         mSwipeLayout.setOnRefreshListener(this);
         mSwipeLayout.setColorSchemeResources(R.color.blue);
 
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         titleList=new ArrayList<String>();
-        httpList=new ArrayList<Map<String, String>>();
-        setHttpList();
-
-        itemList=new ArrayList<Item>();
-        initMenuList();
-        MenuAdapter adapter = new MenuAdapter(this,R.layout.menu_item,itemList);
-        mListView = (ListView)findViewById(R.id.item_list_view);
-        mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-                item.setSelected(true);
-                setPage(position);
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-
-            }
-        });
-        setPage(0);
+        titleView=(TextView)findViewById(R.id.index_title);
+        titleLayout=(LinearLayout)findViewById(R.id.title_layout);
+        progressLayout=(LinearLayout)findViewById(R.id.progress_layout);
+        progressText=(TextView)findViewById(R.id.progress_text);
+        progressBar=(ProgressBar)findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -98,6 +97,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
 
     private void initMenuList() {
+
+        itemList=new ArrayList<Item>();
 
         Item home=new Item("知乎·日报",R.drawable.zhihu);
         Item discovery=new Item("果壳·科学人",R.drawable.guoke);
@@ -111,8 +112,24 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         itemList.add(collection);
         itemList.add(table);
         itemList.add(message);
+
+        MenuAdapter adapter = new MenuAdapter(this,R.layout.menu_item,itemList);
+        mListView = (ListView)findViewById(R.id.item_list_view);
+        mListView.setAdapter(adapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
+                item.setSelected(true);
+                setPage(position);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+
+            }
+        });
     }
+
     private void setHttpList(){
+        httpList=new ArrayList<Map<String, String>>();
+
         Map<String,String> httpMap1=new HashMap<>();
         httpMap1.put("url","http://daily.zhihu.com/");
         httpMap1.put("strPattern","<div class=\"box\"><a href=\"(.*?)\" class=\"link-button\">.*?<span class=\"title\">(.*?)</span></a>");
@@ -154,37 +171,42 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void setPage(int index){
         this.index=index;
         mSwipeLayout.setRefreshing(true);
-        titleView=(TextView)findViewById(R.id.index_title);
 
         Map<String,String> map;
         switch (index){
             case 0:
                 titleView.setText("知乎·日报");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.zhihu));
                  map=httpList.get(0);
                 createPage(map.get("url"), map.get("strPattern"), map.get("UrlHead"));
                 break;
             case 1:
                 titleView.setText("果壳·科学人");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.guoke));
                  map=httpList.get(1);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 2:
                 titleView.setText("译言·精选");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.yiyan));
                  map=httpList.get(2);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 3:
                 titleView.setText("虎嗅·资讯");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.huxiu));
                  map=httpList.get(3);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 4:
                 titleView.setText("十五言·推荐");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.shiwuyan));
                  map=httpList.get(4);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 5:
                 titleView.setText("豆瓣阅读·专栏");
+                titleLayout.setBackgroundColor(getResources().getColor(R.color.douban));
                 map=httpList.get(5);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
@@ -207,7 +229,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 try {
                     data = getNetDate(url, strPattern, urlHead);
                     msg.what = data.size();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     msg.what = -1;
@@ -261,6 +282,9 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
      */
     private void initListview() {
         mSwipeLayout.setRefreshing(false);
+        progressLayout.setVisibility(View.GONE);
+        progressText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
 
         listview=(ListView)findViewById(android.R.id.list);
         SimpleAdapter adapter = new SimpleAdapter(this, data,
@@ -333,39 +357,17 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void onBackPressed(){
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
             mDrawerLayout.closeDrawers();
-        }else super.onBackPressed();
+        }else close();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.dopin.androidpractice2/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+    private void close(){
+        if(System.currentTimeMillis() - exitTime > 2000) {
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            super.onBackPressed();
+        }
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.dopin.androidpractice2/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
     public void find(View view){
         Intent intent=new Intent(MainActivity.this,SearchActivity.class);
         intent.putStringArrayListExtra("titleList", titleList);

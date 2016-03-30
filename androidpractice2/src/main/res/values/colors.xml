@@ -7,10 +7,10 @@
     <color name="light_gray">#efefef</color>
     <color name="menu_item">#1a1919</color>
 
-    <color name="home_color">#1d79c0</color>
-    <color name="discovery_color">#47a9f4</color>
-    <color name="follow_color">#31ebcf</color>
-    <color name="collect_color">#d33c2c</color>
-    <color name="table_color">#e8e622</color>
-    <color name="message_color">#6bca1f</color>
+    <color name="zhihu">#1d79c0</color>
+    <color name="guoke">#247837</color>
+    <color name="huxiu">#2d2d2d</color>
+    <color name="yiyan">#f55454</color>
+    <color name="douban">#27b674</color>
+    <color name="shiwuyan">#6b6b6b</color>
 </resources>
