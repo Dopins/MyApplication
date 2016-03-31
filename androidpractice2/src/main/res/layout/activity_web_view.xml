@@ -5,46 +5,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.dopin.androidpractice2.WebViewActivity">
-    <LinearLayout
-        android:id="@+id/progress_layout"
-        android:background="@color/white"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/id_swipe_ly"
         android:layout_weight="1"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent">
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_weight="1"
-                android:layout_gravity="bottom"
-                android:layout_width="25dp"
-                android:layout_height="25dp" />
-            <TextView
-                android:id="@+id/progress_text"
-                android:layout_weight="1"
-                android:layout_gravity="bottom"
-                android:text="正在加载"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="0dp">
     <WebView
         android:id="@+id/web_view"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp">
     </WebView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

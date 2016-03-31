@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
+    private LinearLayout searchBack;
     private  SimpleAdapter adapter;
     private ArrayList<String> titleList;
     private List<Map<String, Object>> data;
@@ -41,9 +43,12 @@ public class SearchActivity extends Activity {
     private void init(){
         edit_title=(EditText)findViewById(R.id.edit_title);
         btn_find=(Button)findViewById(R.id.btn_find);
+        searchBack=(LinearLayout)findViewById(R.id.search_background);
 
         Intent intent=getIntent();
         titleList=intent.getStringArrayListExtra("titleList");
+        int index=Integer.valueOf(titleList.get(titleList.size()-1));
+        setBackgroundColor(index);
 
         data = new ArrayList<Map<String, Object>>();
 
@@ -53,6 +58,30 @@ public class SearchActivity extends Activity {
                 found();
             }
         });
+    }
+    private void setBackgroundColor(int index){
+        switch (index){
+            case 0:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.zhihu));
+                break;
+            case 1:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.guoke));
+                break;
+            case 2:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.yiyan));
+                break;
+            case 3:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.huxiu));
+                break;
+            case 4:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.shiwuyan));
+                break;
+            case 5:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.douban));
+                break;
+            default:
+                break;
+        }
     }
 
     private void found(){
@@ -65,7 +94,7 @@ public class SearchActivity extends Activity {
         Pattern pattern;
         Matcher matcher;
         try {
-            for(int i = 0; i<titleList.size(); i+=2) {
+            for(int i = 0; i<titleList.size()-1; i+=2) {
                 pattern = Pattern.compile(title);
                 matcher = pattern.matcher(titleList.get(i));
                 if (matcher.find()) {

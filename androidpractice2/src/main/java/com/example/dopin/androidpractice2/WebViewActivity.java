@@ -2,25 +2,19 @@ package com.example.dopin.androidpractice2;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-public class WebViewActivity extends Activity {
 
-    private LinearLayout progressLayout;
-    private ProgressBar progressBar;
-    private TextView progressText;
+public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener {
+
     private WebView webView;
+    private SwipeRefreshLayout mSwipeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,23 +25,19 @@ public class WebViewActivity extends Activity {
         setProgressBar();
     }
     private void setProgressBar(){
-        webView.setWebChromeClient(new WebChromeClient()
-        {
-            public void onProgressChanged(WebView view,int newProgress)
-            {
-                if(newProgress>50){
-                    progressBar.setVisibility(View.GONE);
-                    progressText.setVisibility(View.GONE);
-                    progressLayout.setVisibility(View.GONE);
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress > 60) {
+                    mSwipeLayout.setRefreshing(false);
                 }
             }
         });
-
+    }
+    @Override
+    public void onRefresh(){
+        mSwipeLayout.setRefreshing(false);
     }
     private void init(){
-        progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressText = (TextView) findViewById(R.id.progress_text);
 
         Intent intent=getIntent();
         String url=intent.getStringExtra("url");
@@ -62,5 +52,13 @@ public class WebViewActivity extends Activity {
         settings.setDisplayZoomControls(false);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorSchemeResources(R.color.zhihu, R.color.guoke,R.color.yiyan,
+                R.color.huxiu,R.color.shiwuyan,R.color.douban );
+
+        mSwipeLayout.setProgressViewOffset(false, 0, 20);
+        mSwipeLayout.setRefreshing(true);
     }
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
+    android:id="@+id/search_background"
     android:orientation="vertical"
     tools:context="com.example.dopin.androidpractice2.SearchActivity">
 
@@ -17,7 +17,8 @@
         android:layout_height="0dp">
             <EditText
                 android:id="@+id/edit_title"
-                android:hint="  搜索标题"
+                android:hint="搜索标题"
+                android:paddingLeft="10dp"
                 android:textSize="18sp"
                 android:background="@drawable/search_shape"
                 android:layout_width="0dp"

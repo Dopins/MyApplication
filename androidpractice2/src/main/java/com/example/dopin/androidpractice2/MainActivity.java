@@ -1,14 +1,22 @@
 package com.example.dopin.androidpractice2;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -39,27 +47,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener  {
+public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
-    private TextView progressText;
-    private ProgressBar progressBar;
+    private SimpleAdapter adapter;
+    private CollDatabaseHelper dbHelper;
     private LinearLayout titleLayout;
-    private LinearLayout progressLayout;
     private TextView titleView;
     private SwipeRefreshLayout mSwipeLayout;
     private List<Item> itemList;
-    private  ListView mListView;
-    ListView listview;
-    Handler handler;
-    List<Map<String, Object>> data;
-    List<Map<String, String>> httpList;
-    ArrayList<String> titleList;
+    private ListView mListView;
+    private ListView listview;
+    private Handler handler;
+    private List<Map<String, Object>> data;
+    private List<Map<String, String>> httpList;
+    private ArrayList<String> titleList;
     private GoogleApiClient client;
-    private  DrawerLayout mDrawerLayout;
+    public static  DrawerLayout mDrawerLayout;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
     private int index=-1;
     private long exitTime = 0;
     @Override
@@ -74,21 +84,104 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         setPage(0);
     }
 
+    private void  initView(View view){
+        view.findViewById(R.id.btn_setting).setOnClickListener(this);
+        view.findViewById(R.id.btn_theme).setOnClickListener(this);
+        view.findViewById(R.id.btn_collection).setOnClickListener(this);
+        view.findViewById(R.id.btn_about).setOnClickListener(this);
+    }
     private void init(){
+        dbHelper=new CollDatabaseHelper(this,"Collection.db",null,1);
+
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
+        pref= PreferenceManager.getDefaultSharedPreferences(this);
+        editor=pref.edit();
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
         mSwipeLayout.setOnRefreshListener(this);
         mSwipeLayout.setColorSchemeResources(R.color.blue);
+        mSwipeLayout.setProgressViewOffset(false, 0, 20);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         titleList=new ArrayList<String>();
         titleView=(TextView)findViewById(R.id.index_title);
         titleLayout=(LinearLayout)findViewById(R.id.title_layout);
-        progressLayout=(LinearLayout)findViewById(R.id.progress_layout);
-        progressText=(TextView)findViewById(R.id.progress_text);
-        progressBar=(ProgressBar)findViewById(R.id.progress_bar);
+
+        listview=(ListView)findViewById(android.R.id.list);
+        this.registerForContextMenu(listview);
+
+        findViewById(R.id.btn_setting).setOnClickListener(this);
+        findViewById(R.id.btn_theme).setOnClickListener(this);
+        findViewById(R.id.btn_collection).setOnClickListener(this);
+        findViewById(R.id.btn_about).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id=v.getId();
+        switch (id) {
+            case R.id.btn_setting:
+                intentSetting();
+                break;
+            case R.id.btn_theme:
+                Toast.makeText(this, "theme", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_collection:
+                setCollection();
+                break;
+            case R.id.btn_about:
+                Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+    }
+    private void intentSetting(){
+        Intent intent=new Intent(this,SettingActivity.class);
+        startActivity(intent);
+    }
+    private void setCollection(){
+        data.clear();
+        data=getCollectionData();
+        adapter.notifyDataSetChanged();
+    }
+    private List<Map<String, Object>> getCollectionData(){
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        Cursor cursor=db.query("Collection",null,null,null,null,null,null);
+        if(cursor.moveToFirst()){
+            do{
+                String title=cursor.getString(cursor.getColumnIndex("title"));
+                String url=cursor.getString(cursor.getColumnIndex("url"));
+                Map<String,Object> map=new HashMap<>();
+                map.put("title",title);
+                map.put("url",url);
+                result.add(map);
+            }while(cursor.moveToNext());
+        }
+        return result;
+    }
+
+    @Override
+    public void onDestroy(){
+        getSetting();
+        super.onDestroy();
+    }
+    private void getSetting(){
+        boolean clean=pref.getBoolean("clean_when_close", false);
+        boolean clean2=pref.getBoolean("clean_when_size", false);
+        if(clean) DataCleanManager.cleanInternalCache(this);
+        if(clean2) {
+            try {
+                String size = DataCleanManager.getCacheSize(this.getCacheDir());
+                float num=Float.valueOf(size.substring(0,size.length()-3));
+                if(size.endsWith("MB")&&num>50){
+                    DataCleanManager.cleanInternalCache(this);
+                }
+            }catch (Exception e){
+            }
+        }
     }
 
     @Override
@@ -113,16 +206,15 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         itemList.add(table);
         itemList.add(message);
 
-        MenuAdapter adapter = new MenuAdapter(this,R.layout.menu_item,itemList);
+        MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
         mListView = (ListView)findViewById(R.id.item_list_view);
-        mListView.setAdapter(adapter);
+        mListView.setAdapter(madapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
                 item.setSelected(true);
                 setPage(position);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
-
             }
         });
     }
@@ -170,43 +262,49 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
     public void setPage(int index){
         this.index=index;
-        mSwipeLayout.setRefreshing(true);
 
         Map<String,String> map;
         switch (index){
             case 0:
-                titleView.setText("知乎·日报");
-                titleLayout.setBackgroundColor(getResources().getColor(R.color.zhihu));
+                //titleView.setText("知乎·日报");
+                setBackgroundColor("知乎·日报", R.color.zhihu);
+               /// titleLayout.setBackgroundColor(getResources().getColor(R.color.zhihu));
+               // mSwipeLayout.setColorSchemeResources(R.color.zhihu);
                  map=httpList.get(0);
                 createPage(map.get("url"), map.get("strPattern"), map.get("UrlHead"));
                 break;
             case 1:
                 titleView.setText("果壳·科学人");
                 titleLayout.setBackgroundColor(getResources().getColor(R.color.guoke));
+                mSwipeLayout.setColorSchemeResources(R.color.guoke);
                  map=httpList.get(1);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 2:
                 titleView.setText("译言·精选");
                 titleLayout.setBackgroundColor(getResources().getColor(R.color.yiyan));
+                mSwipeLayout.setColorSchemeResources(R.color.yiyan);
                  map=httpList.get(2);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 3:
                 titleView.setText("虎嗅·资讯");
                 titleLayout.setBackgroundColor(getResources().getColor(R.color.huxiu));
+                mSwipeLayout.setColorSchemeResources(R.color.huxiu);
                  map=httpList.get(3);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 4:
                 titleView.setText("十五言·推荐");
                 titleLayout.setBackgroundColor(getResources().getColor(R.color.shiwuyan));
+                mSwipeLayout.setColorSchemeResources(R.color.shiwuyan);
                  map=httpList.get(4);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 5:
                 titleView.setText("豆瓣阅读·专栏");
                 titleLayout.setBackgroundColor(getResources().getColor(R.color.douban));
+                mSwipeLayout.setColorSchemeResources(R.color.douban);
                 map=httpList.get(5);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
@@ -214,7 +312,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 break;
         }
     }
+    private void setBackgroundColor(String text,int id){
+        titleView.setText(text);
+        titleLayout.setBackgroundColor(getResources().getColor(id));
+        mSwipeLayout.setColorSchemeResources(id);
+    }
     private  void createPage(String url,String strPattern,String urlHead){
+        mSwipeLayout.setRefreshing(true);
         handler = getHandler();//处理message
         ThreadStart(url, strPattern, urlHead);//开启线程
 
@@ -282,12 +386,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
      */
     private void initListview() {
         mSwipeLayout.setRefreshing(false);
-        progressLayout.setVisibility(View.GONE);
-        progressText.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
 
-        listview=(ListView)findViewById(android.R.id.list);
-        SimpleAdapter adapter = new SimpleAdapter(this, data,
+        adapter = new SimpleAdapter(this, data,
                 R.layout.message_item, new String[]{"title"},
                 new int[]{R.id.title});
         listview.setAdapter(adapter);
@@ -296,12 +396,40 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             public void onItemClick(AdapterView<?> parent, View item, int position,
                                     long id) {
                 Map<String, Object> map = data.get(position);
-                String url = (String)map.get("url");
-                Intent intent = new Intent(MainActivity.this,WebViewActivity.class);
-                intent.putExtra("url",url);
+                String url = (String) map.get("url");
+                Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                intent.putExtra("url", url);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                   ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(0, 1, Menu.NONE, "收藏");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+       AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        Map<String, Object> map = data.get(menuInfo.position);
+        String title = (String) map.get("title");
+        String url = (String) map.get("url");
+
+        putCollection(title, url);
+        return true;
+    }
+    private void putCollection(String title,String url){
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("title",title);
+        values.put("url", url);
+        db.insert("Collection", null, values);
+        values.clear();
+
+        Toast.makeText(MainActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -371,6 +499,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void find(View view){
         Intent intent=new Intent(MainActivity.this,SearchActivity.class);
         intent.putStringArrayListExtra("titleList", titleList);
+        titleList.add(""+index);
         startActivity(intent);
     }
     public void message(View view){
