@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by dopin on 2016/3/18.
  */
 public class CollDatabaseHelper extends SQLiteOpenHelper {
-    public static final String CREAK_USER="create table User("
+    public static final String CREAK_USER="create table Collection("
             + "id integer primary key autoincrement,"
             + "title text,"
             + "url text,"
