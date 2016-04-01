@@ -16,4 +16,8 @@
 
     <color name="collection">#e4c787</color>
 
+    <color name="night_title">#273238</color>
+    <color name="night_item_back">#36474f</color>
+    <color name="night_item_font">#e6e7e9</color>
+
 </resources>

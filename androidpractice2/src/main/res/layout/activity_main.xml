@@ -24,9 +24,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:background="#ffffff"
-                        android:divider="#f5f5ff"
-                        android:dividerHeight="20px">
+                        android:background="@color/white"
+                        android:divider="@color/light_gray"
+                        android:dividerHeight="6dp">
                     </ListView>
                 </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
@@ -34,7 +34,6 @@
     <fragment
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:background="#fff"
         android:layout_gravity="left"
         android:gravity="start"
         android:layout_weight="1"

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ public class SearchActivity extends Activity {
         edit_title=(EditText)findViewById(R.id.edit_title);
         btn_find=(Button)findViewById(R.id.btn_find);
         searchBack=(LinearLayout)findViewById(R.id.search_background);
+        res_list=(ListView)findViewById(android.R.id.list);
 
         Intent intent=getIntent();
         titleList=intent.getStringArrayListExtra("titleList");
@@ -60,6 +62,11 @@ public class SearchActivity extends Activity {
         });
     }
     private void setBackgroundColor(int index){
+        if(MainActivity.night){
+            searchBack.setBackgroundColor(getResources().getColor(R.color.night_title));
+            res_list.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+            return;
+        }
         switch (index){
             case 0:
                 searchBack.setBackgroundColor(getResources().getColor(R.color.zhihu));
@@ -79,6 +86,8 @@ public class SearchActivity extends Activity {
             case 5:
                 searchBack.setBackgroundColor(getResources().getColor(R.color.douban));
                 break;
+            case 6:
+                searchBack.setBackgroundColor(getResources().getColor(R.color.collection));
             default:
                 break;
         }
@@ -117,7 +126,6 @@ public class SearchActivity extends Activity {
     }
 
     private void isFound(){
-        res_list=(ListView)findViewById(android.R.id.list);
         adapter = new SimpleAdapter(SearchActivity.this,data,
                 R.layout.message_item, new String[]{"title"},
                 new int[]{R.id.title});

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/message_item_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -17,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="#1b1b1b"
+            android:textColor="@color/menu_item"
             android:textStyle="bold"
             android:maxLines="2"/>
         <TextView

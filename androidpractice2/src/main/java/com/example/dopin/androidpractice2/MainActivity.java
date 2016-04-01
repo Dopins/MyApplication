@@ -1,18 +1,17 @@
 package com.example.dopin.androidpractice2;
+
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
@@ -20,19 +19,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import android.os.Message;
-
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -41,19 +36,18 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
+    public static boolean night;
     private CollDatabaseHelper dbHelper;
     private LinearLayout titleLayout;
     private TextView titleView;
@@ -76,19 +70,12 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
         init();
         setHttpList();
         initMenuList();
         setPage(0);
     }
 
-    private void  initView(View view){
-        view.findViewById(R.id.btn_setting).setOnClickListener(this);
-        view.findViewById(R.id.btn_theme).setOnClickListener(this);
-        view.findViewById(R.id.btn_collection).setOnClickListener(this);
-        view.findViewById(R.id.btn_about).setOnClickListener(this);
-    }
     private void init(){
         dbHelper=new CollDatabaseHelper(this,"Collection.db",null,1);
 
@@ -107,6 +94,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         titleView=(TextView)findViewById(R.id.index_title);
         titleLayout=(LinearLayout)findViewById(R.id.title_layout);
 
+        mListView = (ListView)findViewById(R.id.item_list_view);
         listview=(ListView)findViewById(android.R.id.list);
         this.registerForContextMenu(listview);
 
@@ -114,6 +102,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         findViewById(R.id.btn_theme).setOnClickListener(this);
         findViewById(R.id.btn_collection).setOnClickListener(this);
         findViewById(R.id.btn_about).setOnClickListener(this);
+
+        night=false;
     }
 
     @Override
@@ -124,7 +114,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 intentSetting();
                 break;
             case R.id.btn_theme:
-                Toast.makeText(this, "theme", Toast.LENGTH_SHORT).show();
+                changeTheme();
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.btn_collection:
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -132,7 +123,99 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 index=6;
                 break;
             case R.id.btn_about:
-                Toast.makeText(this, "about", Toast.LENGTH_SHORT).show();
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+                intentAbout();
+                break;
+            default:
+                break;
+        }
+    }
+    private void changeTheme(){
+        if(night){
+            setDayTheme();
+        }else{
+            setNightTheme();
+        }
+    }
+    private void setNightTheme(){
+        night=true;
+        TextView messageTitle=(TextView)findViewById(R.id.title);
+        messageTitle.setTextColor(getResources().getColor(R.color.night_item_font));
+        TextView menuItem=(TextView)findViewById(R.id.item_name);
+        menuItem.setTextColor(getResources().getColor(R.color.night_item_font));
+
+        Button btn_collection = (Button)findViewById(R.id.btn_collection);
+        Button btn_theme=(Button)findViewById(R.id.btn_theme);
+        Button btn_setting = (Button) findViewById(R.id.btn_setting);
+        Button btn_about=(Button)findViewById(R.id.btn_about);
+
+        mSwipeLayout.setColorSchemeResources(R.color.night_title);
+        titleLayout.setBackgroundColor(getResources().getColor(R.color.night_title));
+        mListView.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+        listview.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+        listview.setDivider(new ColorDrawable(getResources().getColor(R.color.night_title)));
+        listview.setDividerHeight(15);
+
+        btn_collection.setTextColor(getResources().getColor(R.color.night_item_font));
+        btn_theme.setTextColor(getResources().getColor(R.color.night_item_font));
+        btn_setting.setTextColor(getResources().getColor(R.color.night_item_font));
+        btn_about.setTextColor(getResources().getColor(R.color.night_item_font));
+
+        btn_collection.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+        btn_theme.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+        btn_setting.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+        btn_about.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+
+    }
+    private void setDayTheme(){
+        night=false;
+
+        TextView messageTitle=(TextView)findViewById(R.id.title);
+        messageTitle.setTextColor(getResources().getColor(R.color.menu_item));
+        TextView menuItem=(TextView)findViewById(R.id.item_name);
+        menuItem.setTextColor(getResources().getColor(R.color.menu_item));
+
+        Button btn_collection=(Button)findViewById(R.id.btn_collection);
+        Button btn_theme=(Button)findViewById(R.id.btn_theme);
+        Button btn_setting=(Button)findViewById(R.id.btn_setting);
+        Button btn_about = (Button)findViewById(R.id.btn_about);
+
+        setTitleBackground();
+
+        mListView.setBackgroundColor(getResources().getColor(R.color.white));
+        listview.setBackgroundColor(getResources().getColor(R.color.white));
+        listview.setDivider(new ColorDrawable(getResources().getColor(R.color.light_gray)));
+        listview.setDividerHeight(15);
+
+        btn_collection.setTextColor(getResources().getColor(R.color.menu_item));
+        btn_theme.setTextColor(getResources().getColor(R.color.menu_item));
+        btn_setting.setTextColor(getResources().getColor(R.color.menu_item));
+        btn_about.setTextColor(getResources().getColor(R.color.menu_item));
+
+        btn_collection.setBackgroundColor(getResources().getColor(R.color.white));
+        btn_theme.setBackgroundColor(getResources().getColor(R.color.white));
+        btn_setting.setBackgroundColor(getResources().getColor(R.color.white));
+        btn_about.setBackgroundColor(getResources().getColor(R.color.white));
+    }
+    private void setTitleBackground(){
+        switch (index) {
+            case 0:
+                setBackgroundColor(R.color.zhihu);
+                break;
+            case 1:
+                setBackgroundColor(R.color.guoke);
+                break;
+            case 2:
+                setBackgroundColor(R.color.yiyan);
+                break;
+            case 3:
+                setBackgroundColor(R.color.huxiu);
+                break;
+            case 4:
+                setBackgroundColor(R.color.shiwuyan);
+                break;
+            case 5:
+                setBackgroundColor(R.color.douban);
                 break;
             default:
                 break;
@@ -142,8 +225,12 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         Intent intent=new Intent(this,SettingActivity.class);
         startActivity(intent);
     }
+    private void intentAbout(){
+        Intent intent=new Intent(this,AboutActivity.class);
+        startActivity(intent);
+    }
     private void setCollection(){
-        //List<Map<String, Object>> collectionData;
+        mSwipeLayout.setRefreshing(false);
         data.clear();
         data=getCollectionData();
         SimpleAdapter adapter = new SimpleAdapter(this, data,
@@ -151,9 +238,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 new int[]{R.id.title});
         listview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        setBackgroundColor("我的收藏", R.color.collection);
+        setBackgroundColor( R.color.collection);
+        setTitleText("我的收藏");
     }
     private List<Map<String, Object>> getCollectionData(){
+        titleList.clear();                      //title只存储当前列表的数据，启动新的createPage时清空titleList
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor=db.query("Collection",null,null,null,null,null,null);
@@ -164,18 +253,19 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 Map<String,Object> map=new HashMap<>();
                 map.put("title",title);
                 map.put("url",url);
+                titleList.add(title);
+                titleList.add(url);
                 result.add(map);
             }while(cursor.moveToNext());
         }
         return result;
     }
-
     @Override
     public void onDestroy(){
-        getSetting();
+        cleanCache();
         super.onDestroy();
     }
-    private void getSetting(){
+    private void cleanCache(){
         boolean clean=pref.getBoolean("clean_when_close", false);
         boolean clean2=pref.getBoolean("clean_when_size", false);
         if(clean) DataCleanManager.cleanInternalCache(this);
@@ -219,7 +309,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         itemList.add(message);
 
         MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
-        mListView = (ListView)findViewById(R.id.item_list_view);
         mListView.setAdapter(madapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -278,32 +367,38 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         Map<String,String> map;
         switch (index){
             case 0:
-                setBackgroundColor("知乎·日报", R.color.zhihu);
+                setBackgroundColor( R.color.zhihu);
+                setTitleText("知乎·日报");
                  map=httpList.get(0);
                 createPage(map.get("url"), map.get("strPattern"), map.get("UrlHead"));
                 break;
             case 1:
-                setBackgroundColor("果壳·科学人", R.color.guoke);
+                setBackgroundColor( R.color.guoke);
+                setTitleText("果壳·科学人");
                  map=httpList.get(1);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 2:
-                setBackgroundColor("译言·精选", R.color.yiyan);
+                setBackgroundColor( R.color.yiyan);
+                setTitleText("译言·精选");
                  map=httpList.get(2);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 3:
-                setBackgroundColor("虎嗅·资讯", R.color.huxiu);
+                setBackgroundColor( R.color.huxiu);
+                setTitleText("虎嗅·资讯");
                  map=httpList.get(3);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 4:
-                setBackgroundColor("十五言·推荐", R.color.shiwuyan);
+                setBackgroundColor( R.color.shiwuyan);
+                setTitleText("十五言·推荐");
                  map=httpList.get(4);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 5:
-                setBackgroundColor("豆瓣阅读·专栏", R.color.douban);
+                setBackgroundColor( R.color.douban);
+                setTitleText("豆瓣阅读·专栏");
                 map=httpList.get(5);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
@@ -311,10 +406,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 break;
         }
     }
-    private void setBackgroundColor(String text,int id){
-        titleView.setText(text);
+    private void setBackgroundColor(int id){
+        if(night) return;
         titleLayout.setBackgroundColor(getResources().getColor(id));
         mSwipeLayout.setColorSchemeResources(id);
+    }
+    private void setTitleText(String text){
+        titleView.setText(text);
     }
     private  void createPage(String url,String strPattern,String urlHead){
         mSwipeLayout.setRefreshing(true);
@@ -340,6 +438,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             }
         }.start();
     }
+
     /**
      * 联网获得数据
      */
@@ -384,6 +483,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
      * 在listview里显示数据
      */
     private void initListview() {
+        if(index==6) return;
         mSwipeLayout.setRefreshing(false);
 
         SimpleAdapter adapter = new SimpleAdapter(this, data,
@@ -532,7 +632,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
             exitTime = System.currentTimeMillis();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
     public void find(View view){

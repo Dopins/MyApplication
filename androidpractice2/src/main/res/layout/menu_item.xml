@@ -4,7 +4,6 @@
     android:layout_height="60dp">
 
     <LinearLayout
-        android:background="@drawable/listitem_selector"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
@@ -18,9 +17,9 @@
         <TextView
             android:id="@+id/item_name"
             android:gravity="left|center_vertical"
-            android:textColor="@drawable/font_selector"
+            android:textStyle="bold"
+            android:textColor="@color/menu_item"
             android:textSize="15sp"
-            android:duplicateParentState="true"
             android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
