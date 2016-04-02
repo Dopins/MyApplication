@@ -2,6 +2,7 @@ package com.example.dopin.androidpractice2;
 
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,6 +13,10 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
@@ -20,9 +25,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Message;
@@ -63,7 +68,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public static  DrawerLayout mDrawerLayout;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private int index=-1;
+    public static int index=-1;
     private long exitTime = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +77,14 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         setContentView(R.layout.activity_main);
         init();
         setHttpList();
-        initMenuList();
         setPage(0);
     }
 
     private void init(){
+        initMenuList();
+        listview=(ListView)findViewById(android.R.id.list);
+        this.registerForContextMenu(listview);
+
         dbHelper=new CollDatabaseHelper(this,"Collection.db",null,1);
 
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
@@ -86,7 +94,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
         mSwipeLayout.setOnRefreshListener(this);
         mSwipeLayout.setColorSchemeResources(R.color.blue);
-        mSwipeLayout.setProgressViewOffset(false, 0, 20);
+        mSwipeLayout.setProgressViewOffset(false, 0, 40);
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
@@ -94,18 +102,34 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         titleView=(TextView)findViewById(R.id.index_title);
         titleLayout=(LinearLayout)findViewById(R.id.title_layout);
 
-        mListView = (ListView)findViewById(R.id.item_list_view);
-        listview=(ListView)findViewById(android.R.id.list);
-        this.registerForContextMenu(listview);
-
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_theme).setOnClickListener(this);
         findViewById(R.id.btn_collection).setOnClickListener(this);
         findViewById(R.id.btn_about).setOnClickListener(this);
 
-        night=false;
+        setTheme();
     }
 
+    private void setTheme(){
+        boolean auto_theme=pref.getBoolean("auto_theme", false);
+        if(auto_theme){
+            int dayHour=pref.getInt("day_hour",6);
+            int dayMinute=pref.getInt("day_minute",0);
+            int nightHour=pref.getInt("night_hour",18);
+            int nightMinute=pref.getInt("night_minute",0);
+            Time time=new Time();
+            time.setToNow();
+            int hour=time.hour;
+            int minute=time.minute;
+            if((dayHour < hour && hour < nightHour)||(hour == dayHour && minute > dayMinute)||(hour == nightHour && minute < nightMinute)) {
+                setDayTheme();
+            }else{
+                setNightTheme();
+            }
+        }else{
+            night=false;
+        }
+    }
     @Override
     public void onClick(View v) {
         int id=v.getId();
@@ -139,10 +163,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
     private void setNightTheme(){
         night=true;
-        TextView messageTitle=(TextView)findViewById(R.id.title);
-        messageTitle.setTextColor(getResources().getColor(R.color.night_item_font));
-        TextView menuItem=(TextView)findViewById(R.id.item_name);
-        menuItem.setTextColor(getResources().getColor(R.color.night_item_font));
 
         Button btn_collection = (Button)findViewById(R.id.btn_collection);
         Button btn_theme=(Button)findViewById(R.id.btn_theme);
@@ -166,14 +186,18 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         btn_setting.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_about.setBackgroundColor(getResources().getColor(R.color.night_item_back));
 
+        MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
+        mListView.setAdapter(madapter);
+
+        if(data!=null) {
+            MessageAdapter adapter = new MessageAdapter(this, data,
+                    R.layout.message_item, new String[]{"title"},
+                    new int[]{R.id.title});
+            listview.setAdapter(adapter);
+        }
     }
     private void setDayTheme(){
         night=false;
-
-        TextView messageTitle=(TextView)findViewById(R.id.title);
-        messageTitle.setTextColor(getResources().getColor(R.color.menu_item));
-        TextView menuItem=(TextView)findViewById(R.id.item_name);
-        menuItem.setTextColor(getResources().getColor(R.color.menu_item));
 
         Button btn_collection=(Button)findViewById(R.id.btn_collection);
         Button btn_theme=(Button)findViewById(R.id.btn_theme);
@@ -196,6 +220,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         btn_theme.setBackgroundColor(getResources().getColor(R.color.white));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.white));
         btn_about.setBackgroundColor(getResources().getColor(R.color.white));
+
+        MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
+        mListView.setAdapter(madapter);
+
+        if(data!=null) {
+            MessageAdapter adapter = new MessageAdapter(this, data,
+                    R.layout.message_item, new String[]{"title"},
+                    new int[]{R.id.title});
+            listview.setAdapter(adapter);
+        }
     }
     private void setTitleBackground(){
         switch (index) {
@@ -217,6 +251,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             case 5:
                 setBackgroundColor(R.color.douban);
                 break;
+            case 6:
+                setBackgroundColor(R.color.collection);
             default:
                 break;
         }
@@ -226,16 +262,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         startActivity(intent);
     }
     private void intentAbout(){
-        Intent intent=new Intent(this,AboutActivity.class);
+        Intent intent=new Intent(this, AboutActivity.class);
         startActivity(intent);
     }
     private void setCollection(){
         mSwipeLayout.setRefreshing(false);
         data.clear();
         data=getCollectionData();
-        SimpleAdapter adapter = new SimpleAdapter(this, data,
-                R.layout.message_item, new String[]{"title"},
-                new int[]{R.id.title});
+        MessageAdapter adapter = new MessageAdapter(this, data,
+                R.layout.message_item, new String[]{"title","label"},
+                new int[]{R.id.title,R.id.message_label});
         listview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         setBackgroundColor( R.color.collection);
@@ -250,11 +286,15 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             do{
                 String title=cursor.getString(cursor.getColumnIndex("title"));
                 String url=cursor.getString(cursor.getColumnIndex("url"));
+                String label=cursor.getString(cursor.getColumnIndex("label"));
                 Map<String,Object> map=new HashMap<>();
                 map.put("title",title);
                 map.put("url",url);
+                map.put("label",label);
+
                 titleList.add(title);
                 titleList.add(url);
+
                 result.add(map);
             }while(cursor.moveToNext());
         }
@@ -292,7 +332,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
 
     private void initMenuList() {
-
+        mListView = (ListView)findViewById(R.id.item_list_view);
         itemList=new ArrayList<Item>();
 
         Item home=new Item("知乎·日报",R.drawable.zhihu);
@@ -486,7 +526,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         if(index==6) return;
         mSwipeLayout.setRefreshing(false);
 
-        SimpleAdapter adapter = new SimpleAdapter(this, data,
+        MessageAdapter adapter = new MessageAdapter(this, data,
                 R.layout.message_item, new String[]{"title"},
                 new int[]{R.id.title});
         listview.setAdapter(adapter);
@@ -508,6 +548,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                                    ContextMenu.ContextMenuInfo menuInfo) {
         menu.add(0, 1, Menu.NONE, "收藏");
         menu.add(0, 2, Menu.NONE, "取消收藏");
+        if(index==6){
+            menu.add(0, 3, Menu.NONE, "标签");
+            menu.add(0, 4, Menu.NONE, "笔记");
+        }
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -520,10 +564,56 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             case 2:
                 discollect(menuInfo.position);
                 break;
+            case 3:
+                setLabel(menuInfo.position);
+                break;
+            case 4:
+                setNote(menuInfo.position);
+                break;
             default:
                 break;
         }
         return true;
+    }
+    private void setNote(int position){
+        Map<String, Object> map = data.get(position);
+        final String title = (String) map.get("title");
+        intentNoteActivity(title);
+    }
+    private void intentNoteActivity(String title){
+        Intent intent=new Intent(MainActivity.this,NoteActivity.class);
+        intent.putExtra("title",title);
+        startActivity(intent);
+    }
+    private void setLabel(int position){
+        Map<String, Object> map = data.get(position);
+        final String title = (String) map.get("title");
+
+        final EditText label=new EditText(this);
+        label.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});//字数不能超过10
+
+        new AlertDialog.Builder(this).setTitle("设置标签").setIcon(android.R.drawable.ic_dialog_info)
+                .setView(label)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String labelStr=label.getText().toString();
+
+                        SQLiteDatabase db=dbHelper.getWritableDatabase();
+                        ContentValues values=new ContentValues();
+                        values.put("label", labelStr);
+                        db.update("Collection", values, "title= ? ", new String[]{title});
+                        setCollection();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .show();
+
     }
     private void collect(int position){
         Map<String, Object> map = data.get(position);
@@ -638,7 +728,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void find(View view){
         Intent intent=new Intent(MainActivity.this,SearchActivity.class);
         intent.putStringArrayListExtra("titleList", titleList);
-        titleList.add(""+index);
         startActivity(intent);
     }
     public void message(View view){

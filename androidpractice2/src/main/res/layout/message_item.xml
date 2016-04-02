@@ -22,12 +22,17 @@
             android:textStyle="bold"
             android:maxLines="2"/>
         <TextView
-            android:id="@+id/content"
-            android:ellipsize="end"
-            android:gravity="left"
-            android:textColor="#353434"
-            android:textSize="14sp"
-            android:maxLines="4"
+            android:id="@+id/message_label"
+            android:singleLine="true"
+            android:layout_gravity="left"
+            android:padding="2dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/message_image"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"

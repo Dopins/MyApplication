@@ -1,6 +1,7 @@
 package com.example.dopin.androidpractice2;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,26 +23,20 @@ public class MenuAdapter extends ArrayAdapter<Item> {
     }
     @Override
     public View getView(int position,View convertView,ViewGroup parent){
+        View view= LayoutInflater.from(getContext()).inflate(resourceId, null);
         Item item=getItem(position);
-        View view;
-        ViewHolder viewHolder;
-        if(convertView==null){
-            view= LayoutInflater.from(getContext()).inflate(resourceId,null);
-            viewHolder=new ViewHolder();
-            viewHolder.itemImage=(ImageView)view.findViewById(R.id.item_image);
-            viewHolder.itemName=(TextView)view.findViewById(R.id.item_name);
-            view.setTag(viewHolder);
-        }else{
-            view=convertView;
-            viewHolder=(ViewHolder)view.getTag();
-        }
-        viewHolder.itemImage.setImageResource(item.getImageId());
-        viewHolder.itemName.setText(item.getName());
-        return view;
 
+        ImageView itemImage=(ImageView)view.findViewById(R.id.item_image);
+        TextView itemName=(TextView)view.findViewById(R.id.item_name);
+        if(MainActivity.night){
+            itemName.setTextColor(view.getResources().getColor(R.color.night_item_font));
+        }else{
+            itemName.setTextColor(view.getResources().getColor(R.color.menu_item));
+        }
+        itemImage.setImageResource(item.getImageId());
+        itemName.setText(item.getName());
+
+        return view;
     }
-    class ViewHolder{
-        ImageView itemImage;
-        TextView itemName;
-    }
+
 }

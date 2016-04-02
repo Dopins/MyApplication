@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import java.util.regex.Pattern;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -18,15 +18,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
+
 import android.widget.Toast;
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
     private LinearLayout searchBack;
-    private  SimpleAdapter adapter;
+    private  MessageAdapter adapter;
     private ArrayList<String> titleList;
     private List<Map<String, Object>> data;
     private EditText edit_title;
@@ -49,7 +48,7 @@ public class SearchActivity extends Activity {
 
         Intent intent=getIntent();
         titleList=intent.getStringArrayListExtra("titleList");
-        int index=Integer.valueOf(titleList.get(titleList.size()-1));
+        int index=MainActivity.index;
         setBackgroundColor(index);
 
         data = new ArrayList<Map<String, Object>>();
@@ -103,7 +102,7 @@ public class SearchActivity extends Activity {
         Pattern pattern;
         Matcher matcher;
         try {
-            for(int i = 0; i<titleList.size()-1; i+=2) {
+            for(int i = 0; i<titleList.size(); i+=2) {
                 pattern = Pattern.compile(title);
                 matcher = pattern.matcher(titleList.get(i));
                 if (matcher.find()) {
@@ -126,7 +125,7 @@ public class SearchActivity extends Activity {
     }
 
     private void isFound(){
-        adapter = new SimpleAdapter(SearchActivity.this,data,
+        adapter = new MessageAdapter(SearchActivity.this,data,
                 R.layout.message_item, new String[]{"title"},
                 new int[]{R.id.title});
         res_list.setAdapter(adapter);
