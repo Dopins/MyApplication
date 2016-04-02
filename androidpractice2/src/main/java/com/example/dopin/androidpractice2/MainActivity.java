@@ -287,10 +287,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 String title=cursor.getString(cursor.getColumnIndex("title"));
                 String url=cursor.getString(cursor.getColumnIndex("url"));
                 String label=cursor.getString(cursor.getColumnIndex("label"));
+                String note=cursor.getString(cursor.getColumnIndex("note"));
+
                 Map<String,Object> map=new HashMap<>();
                 map.put("title",title);
                 map.put("url",url);
                 map.put("label",label);
+                map.put("note",note);
 
                 titleList.add(title);
                 titleList.add(url);
@@ -730,8 +733,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         intent.putStringArrayListExtra("titleList", titleList);
         startActivity(intent);
     }
-    public void message(View view){
-        Toast.makeText(this,"alert",Toast.LENGTH_SHORT).show();
+    public void collection(View view){
+        setCollection();
     }
     public void menu(View view){
         mDrawerLayout.openDrawer(Gravity.LEFT);

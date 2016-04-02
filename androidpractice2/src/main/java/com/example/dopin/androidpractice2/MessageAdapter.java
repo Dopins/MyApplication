@@ -34,6 +34,7 @@ public class MessageAdapter extends SimpleAdapter {
              viewHolder.title=(TextView)view.findViewById(R.id.title);
              viewHolder.image=(ImageView)view.findViewById(R.id.message_image);
              viewHolder.label=(TextView)view.findViewById(R.id.message_label);
+             viewHolder.hasNote=(ImageView)view.findViewById(R.id.note);
              view.setTag(viewHolder);
          } else {
              view = convertView;
@@ -47,6 +48,8 @@ public class MessageAdapter extends SimpleAdapter {
         }
         if(!("".equals((String)item.get("label"))||item.get("label")==null)){
             viewHolder.label.setBackground(view.getResources().getDrawable(R.drawable.label_shape));
+        }if(!("".equals((String)item.get("note"))||item.get("note")==null)){
+            viewHolder.hasNote.setImageResource(android.R.drawable.ic_menu_edit);
         }
         viewHolder.title.setText((String)item.get("title"));
         viewHolder.label.setText((String)item.get("label"));
@@ -55,7 +58,7 @@ public class MessageAdapter extends SimpleAdapter {
     class ViewHolder{
         TextView title;
         TextView label;
-        TextView note;
+        ImageView hasNote;
         ImageView image;
     }
 

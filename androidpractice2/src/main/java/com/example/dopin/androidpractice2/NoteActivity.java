@@ -23,8 +23,11 @@ public class NoteActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_note);
-
+        if(MainActivity.night){
+            setContentView(R.layout.activity_note_night);
+        }else {
+            setContentView(R.layout.activity_note);
+        }
         init();
     }
     private void init(){
@@ -55,7 +58,7 @@ public class NoteActivity extends Activity {
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values=new ContentValues();
         values.put("note", noteStr);
-        db.update("Collection", values, "title= ? ", new String[]{title});
+        db.update("Collection", values, "title= ? ", new String[]{title} );
         Toast.makeText(this,"保存成功",Toast.LENGTH_SHORT).show();
     }
     private void showNote(String title){

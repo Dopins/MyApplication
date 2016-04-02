@@ -46,17 +46,17 @@
 
     <FrameLayout
         android:id="@+id/add"
-        android:onClick="message"
+        android:onClick="collection"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
         <Button
             android:id="@+id/addButton"
-            android:onClick="message"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:clickable="false"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center"
-            android:background="@drawable/alert"
+            android:background="@android:drawable/btn_star_big_on"
             />
     </FrameLayout>
 

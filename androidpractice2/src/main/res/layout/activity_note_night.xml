@@ -7,7 +7,7 @@
     tools:context="com.example.dopin.androidpractice2.NoteActivity">
 
     <LinearLayout
-        android:background="@color/white"
+        android:background="@color/night_title"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
@@ -15,12 +15,12 @@
             android:id="@+id/back"
             android:layout_width="50dp"
             android:layout_height="match_parent">
-        <ImageView
-            android:layout_gravity="center"
-            android:background="@drawable/back2"
-            android:clickable="false"
-            android:layout_width="25dp"
-            android:layout_height="25dp" />
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@drawable/back2"
+                android:clickable="false"
+                android:layout_width="25dp"
+                android:layout_height="25dp" />
             >
         </FrameLayout>
         <View
@@ -43,7 +43,8 @@
 
     <EditText
         android:id="@+id/note"
-        android:background="@color/note"
+        android:background="@color/night_item_back"
+        android:textColor="@color/night_item_font"
         android:padding="3dp"
         android:gravity="start"
         android:inputType="textMultiLine"
