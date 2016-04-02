@@ -51,8 +51,8 @@ public class FragMe extends Fragment implements View.OnClickListener{
         name=(TextView)view.findViewById(R.id.name);
         sex=(TextView)view.findViewById(R.id.sex);
         location=(TextView)view.findViewById(R.id.location);
-        head_sculpture=(ImageView)view.findViewById(R.id.head_sculpture);
 
+        head_sculpture=(ImageView)view.findViewById(R.id.head_sculpture);
         head_sculpture.setOnClickListener(this);
 
     }
@@ -98,6 +98,9 @@ public class FragMe extends Fragment implements View.OnClickListener{
                 dialogShowConfirmClose();
                 break;
             case R.id.btn_about:
+
+                break;
+            case R.id.head_sculpture:
 
                 break;
             default:

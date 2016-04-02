@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -16,18 +20,18 @@ import android.view.Window;
 
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
 
 
-public class MainActivity extends FragmentActivity  implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private Toolbar mToolbar;
     public static String account;
     private ViewPager mViewPager;
     private int currIndex;//当前页卡编号
-    private int bmpW;//横线图片宽度
-    private int offset;//图片移动的偏移量
     private FragWeChat weChat;
     private FragAddressBook discovery;
     private FragDiscovery address_book;
@@ -43,7 +47,7 @@ public class MainActivity extends FragmentActivity  implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         Intent intent=getIntent();
@@ -83,6 +87,11 @@ public class MainActivity extends FragmentActivity  implements View.OnClickListe
         mViewPager.setCurrentItem(0);//设置当前显示标签页为第一页
         mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());//页面变化时的监听器
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
     private void initButton(){
         weChatText=(TextView)findViewById(R.id.weChatText);
@@ -104,10 +113,31 @@ public class MainActivity extends FragmentActivity  implements View.OnClickListe
         findViewById(R.id.address_book).setOnClickListener(this);
         findViewById(R.id.discovery).setOnClickListener(this);
         findViewById(R.id.me).setOnClickListener(this);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("某信");// 标题的文字需在setSupportActionBar之前，不然会无效
+        setSupportActionBar(mToolbar);
+
+		/* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理*/
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_settings:
+                        Toast.makeText(MainActivity.this, "action_settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_search:
+                        Toast.makeText(MainActivity.this, "action_search", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
-        private int one = offset *2 +bmpW;//两个相邻页面的偏移量
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
@@ -119,11 +149,6 @@ public class MainActivity extends FragmentActivity  implements View.OnClickListe
         }
         @Override
         public void onPageSelected(int arg0) {
-            Animation animation = new TranslateAnimation(currIndex*one,arg0*one,0,0);//平移动画
-            animation.setFillAfter(true);//动画终止时停留在最后一帧，不然会回到没有执行前的状态
-            animation.setDuration(200);//动画持续时间0.2秒
-            //image.startAnimation(animation);//是用ImageView来显示动画的
-
             currIndex = arg0;
             turnPage(currIndex);
         }

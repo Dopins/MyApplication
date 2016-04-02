@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by dopin on 2016/3/13.
  */
-public class FragWeChat extends Fragment implements View.OnClickListener{
+public class FragWeChat extends Fragment{
     private ListView sessionListView;
     private SessionAdapter adapter;
     private List<String> sessionList;
@@ -37,15 +37,6 @@ public class FragWeChat extends Fragment implements View.OnClickListener{
             }
         });
         return view;
-    }
-    @Override
-    public void onClick(View view){
-        int id=view.getId();
-        if(id==R.id.find|id==R.id.findButton){
-            Toast.makeText(getActivity(),"find",Toast.LENGTH_SHORT).show();
-        }else if(id==R.id.add|id==R.id.addButton){
-            Toast.makeText(getActivity(), "add", Toast.LENGTH_SHORT).show();
-        }
     }
     private void initSession(){
         sessionList.add("用户1");
