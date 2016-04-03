@@ -1,12 +1,22 @@
 package com.example.dopin.androidpractice;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +28,9 @@ import android.widget.TextView;
  * Created by dopin on 2016/3/13.
  */
 public class FragMe extends Fragment implements View.OnClickListener{
+    public static final int CHOOSE_PHOTO=1;
+
+    private String head_sculpture_path;
     private MyDatabaseHelper dbHelper;
     private Button btn_modify_password;
     private Button btn_modify_info;
@@ -56,8 +69,13 @@ public class FragMe extends Fragment implements View.OnClickListener{
         head_sculpture.setOnClickListener(this);
 
     }
-
-
+    private void saveImagePath(String imagePath){
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("image_path",imagePath);
+        db.update("User", values, "account=?",new String[]{MainActivity.account} );
+        values.clear();
+    }
     private void setInfo(String account){
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor=db.query("User",null,null,null,null,null,null);
@@ -68,9 +86,11 @@ public class FragMe extends Fragment implements View.OnClickListener{
                     String nameStr=cursor.getString(cursor.getColumnIndex("name"));
                     String sexStr=cursor.getString(cursor.getColumnIndex("sex"));
                     String locationStr=cursor.getString(cursor.getColumnIndex("location"));
+                    String imagePath=cursor.getString(cursor.getColumnIndex("image_path"));
                     name.setText(nameStr);
                     sex.setText(sexStr);
                     location.setText(locationStr);
+                    head_sculpture_path=imagePath;
                     return;
                 }
             }while(cursor.moveToNext());
@@ -80,6 +100,7 @@ public class FragMe extends Fragment implements View.OnClickListener{
     public void onStart(){
         super.onStart();
         setInfo(MainActivity.account);
+        displayImage(head_sculpture_path);
     }
 
     @Override
@@ -98,14 +119,83 @@ public class FragMe extends Fragment implements View.OnClickListener{
                 dialogShowConfirmClose();
                 break;
             case R.id.btn_about:
-
+                intentAbout();
                 break;
             case R.id.head_sculpture:
-
+                choosePhoto();
                 break;
             default:
                 break;
         }
+    }
+    private void choosePhoto(){
+        Intent intent=new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+        startActivityForResult(intent,CHOOSE_PHOTO);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode,int resultCode,Intent data){
+        switch (requestCode){
+            case CHOOSE_PHOTO:
+                if(resultCode==getActivity().RESULT_OK){
+                    if(Build.VERSION.SDK_INT>=19){
+                        handleImageOnKitKat(data);
+                    }else{
+                        handleImageBeforeKitKat(data);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    @TargetApi(19)
+    private void handleImageOnKitKat(Intent data){
+        String imagePath=null;
+        Uri uri=data.getData();
+        if(DocumentsContract.isDocumentUri(getActivity(),uri)){
+            String docId=DocumentsContract.getDocumentId(uri);
+            if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                String id=docId.split(":")[1];
+                String selection=MediaStore.Images.Media._ID+"="+id;
+                imagePath=getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
+            }else if("com.providers.downloads.documents".equals(uri.getAuthority())){
+                Uri contentUri= ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
+                        Long.valueOf(docId));
+                imagePath=getImagePath(contentUri,null);
+            }
+        }else if("content".equalsIgnoreCase(uri.getScheme())){
+            imagePath=getImagePath(uri,null);
+        }
+        saveImagePath(imagePath);
+    }
+    private  void handleImageBeforeKitKat(Intent data){
+        Uri uri=data.getData();
+        String imagePath=getImagePath(uri, null);
+        saveImagePath(imagePath);
+    }
+    private String getImagePath(Uri uri,String selection){
+        String path=null;
+        Cursor cursor=getActivity().getContentResolver().query(uri, null, selection, null, null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+    private void displayImage(String imagePath){
+        if(imagePath!=null){
+            Bitmap bitmap= BitmapFactory.decodeFile(imagePath);
+            head_sculpture.setImageBitmap(bitmap);
+        }
+    }
+
+    private void intentAbout(){
+        Intent intent=new Intent(getActivity(),AboutActivity.class);
+        startActivity(intent);
     }
 
     private void dialogShowConfirmClose() {

@@ -15,12 +15,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MessageActivity" />
         <activity android:name=".ModifyPasswordActivity" />
-        <activity android:name=".ModifyInfoActivity"></activity>
+        <activity android:name=".ModifyInfoActivity" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

@@ -12,9 +12,10 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + "id integer primary key autoincrement,"
             + "account text,"
             + "password text,"
-            + "name,"
-            + "sex,"
-            + "location)";
+            + "name text,"
+            + "sex text,"
+            + "location text,"
+            + "image_path text)";
     private Context mContext;
     public MyDatabaseHelper(Context context,String name,SQLiteDatabase.CursorFactory factory,int version){
         super(context,name,factory,version);
