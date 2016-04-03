@@ -144,7 +144,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             case R.id.btn_collection:
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 setCollection();
-                index=6;
                 break;
             case R.id.btn_about:
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -266,6 +265,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         startActivity(intent);
     }
     private void setCollection(){
+        index=6;
         mSwipeLayout.setRefreshing(false);
         data.clear();
         data=getCollectionData();
