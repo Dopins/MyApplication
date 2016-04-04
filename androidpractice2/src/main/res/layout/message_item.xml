@@ -12,17 +12,26 @@
             android:ellipsize="end"
             android:id="@+id/title"
             android:layout_gravity="left"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@color/menu_item"
             android:textStyle="bold"
             android:maxLines="2"/>
+        <TextView
+            android:id="@+id/space"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
         <LinearLayout
+            android:id="@+id/label_layout"
+            android:visibility="gone"
             android:orientation="horizontal"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -37,7 +46,7 @@
             <TextView
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
             <ImageView
                 android:id="@+id/note"
                 android:layout_marginRight="20dp"
@@ -47,11 +56,12 @@
 
         <ImageView
             android:id="@+id/message_image"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
+            android:background="@color/light_gray"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"/>
     </LinearLayout>
 </LinearLayout>

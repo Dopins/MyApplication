@@ -274,6 +274,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 new int[]{R.id.title,R.id.message_label});
         listview.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
         setBackgroundColor( R.color.collection);
         setTitleText("我的收藏");
     }
@@ -368,22 +369,23 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         Map<String,String> httpMap1=new HashMap<>();
         httpMap1.put("url","http://daily.zhihu.com/");
-        httpMap1.put("strPattern","<div class=\"box\"><a href=\"(.*?)\" class=\"link-button\">.*?<span class=\"title\">(.*?)</span></a>");
+        httpMap1.put("strPattern","<div class=\"box\"><a href=\"(.*?)\" class=\"link-button\"><img src=\"(.*?)\" class=\"preview-image\"><span class=\"title\">(.*?)</span></a>");
         httpMap1.put("UrlHead","http://daily.zhihu.com");
 
         Map<String,String> httpMap2=new HashMap<>();
         httpMap2.put("url","http://www.guokr.com/scientific/");
-        httpMap2.put("strPattern","<a class=\"article-title\" href=\"(.*?)\" target=\"_blank\" data-gaevent=.*?>(.*?)</a>");
+        httpMap2.put("strPattern",
+                "<a class=\"article-title\" href=\"(.*?)\" target=\"_blank\" data-gaevent=\".*?\">(.*?)</a>[\\s\\S]*?<img data-height.*?src=\"(.*?)\"></a>");
         httpMap2.put("UrlHead","");
 
         Map<String,String> httpMap3=new HashMap<>();
         httpMap3.put("url","http://select.yeeyan.org/");
-        httpMap3.put("strPattern","<a target=\"_blank\" href=\"(.*?)\">(.*?)</a>");
+        httpMap3.put("strPattern","<a target=\"_blank\" href=\"(.*?)\">[\\s\\S]*?<img src=\"(.*?)\" />\\s*?</a>\\s*?</div>\\s*?<div class=\"title\">\\s*?<a target=\"_blank\" href=\".*?\">(.*?)</a>");
         httpMap3.put("UrlHead","");
 
         Map<String,String> httpMap4=new HashMap<>();
         httpMap4.put("url","http://www.huxiu.com/business");
-        httpMap4.put("strPattern","<a href=\"(.*?)\" class=\"transition\" target=\"_blank\">(.*?)</a>");
+        httpMap4.put("strPattern"," <a class=\"transition\" href=\"(.*?)\" target=\"_blank\">[\\s\\S]*?<img class=\"lazy\" data-original=\"(.*?)\\?.*?\" alt=\"(.*?)\">");
         httpMap4.put("UrlHead", "http://www.huxiu.com");
 
         Map<String,String> httpMap5=new HashMap<>();
@@ -495,17 +497,51 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         while (m.find()) {
             MatchResult mr = m.toMatchResult();
-            Map<String, Object> map = new HashMap<String, Object>();
 
-                map.put("url", urlHead+mr.group(1));
-                map.put("title", mr.group(2));
-                titleList.add((String) map.get("title"));
-                titleList.add((String) map.get("url"));
+            Map<String, Object> map=getMap(urlHead,mr);
+
+            titleList.add((String) map.get("title"));
+            titleList.add((String) map.get("url"));
             result.add(map);
         }
         return result;
     }
-
+    private  Map<String, Object> getMap(String urlHead,MatchResult mr){
+        Map<String, Object> map = new HashMap<String, Object>();
+        switch (index){
+            case 0:
+                map.put("url", urlHead + mr.group(1));
+                map.put("imageUrl", mr.group(2));
+                map.put("title", mr.group(3));
+                break;
+            case 1:
+                map.put("url", urlHead + mr.group(1));
+                map.put("title", mr.group(2));
+                map.put("imageUrl", mr.group(3));
+                break;
+            case 2:
+                map.put("url", urlHead + mr.group(1));
+                map.put("imageUrl",  mr.group(2));
+                map.put("title", mr.group(3));
+                break;
+            case 3:
+                map.put("url", urlHead + mr.group(1));
+                map.put("imageUrl", mr.group(2));
+                map.put("title", mr.group(3));
+                break;
+            case 4:
+                map.put("url", urlHead + mr.group(1));
+                map.put("title", mr.group(2));
+                break;
+            case 5:
+                map.put("url", urlHead + mr.group(1));
+                map.put("title", mr.group(2));
+                break;
+            default:
+                break;
+        }
+            return map;
+    }
     /**
      * 处理联网结果，显示在listview
      */

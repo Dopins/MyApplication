@@ -19,13 +19,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
     private LinearLayout searchBack;
-    private  MessageAdapter adapter;
+    private  SimpleAdapter adapter;
     private ArrayList<String> titleList;
     private List<Map<String, Object>> data;
     private EditText edit_title;
@@ -125,15 +126,15 @@ public class SearchActivity extends Activity {
     }
 
     private void isFound(){
-        adapter = new MessageAdapter(SearchActivity.this,data,
-                R.layout.message_item, new String[]{"title"},
-                new int[]{R.id.title});
+        adapter = new SimpleAdapter(SearchActivity.this,data,
+                R.layout.search_item, new String[]{"title"},
+                new int[]{R.id.search_title});
         res_list.setAdapter(adapter);
         res_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+            public void onItemClick(AdapterView<?> parent, View item, int position,
                                     long arg3) {
-                Map<String, Object> map = data.get(arg2);
+                Map<String, Object> map = data.get(position);
                 String url = (String)map.get("url");
                 Intent intent = new Intent(SearchActivity.this,WebViewActivity.class);
                 intent.putExtra("url", url);
