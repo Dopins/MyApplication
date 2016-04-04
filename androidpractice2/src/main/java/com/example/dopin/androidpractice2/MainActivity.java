@@ -2,12 +2,15 @@ package com.example.dopin.androidpractice2;
 
 import android.app.ListActivity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -52,6 +55,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
+    public static boolean save_flow;
     public static boolean night;
     private CollDatabaseHelper dbHelper;
     private LinearLayout titleLayout;
@@ -108,6 +112,17 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         findViewById(R.id.btn_about).setOnClickListener(this);
 
         setTheme();
+
+        save_flow=pref.getBoolean("save_flow", false);
+    }
+    public static boolean isWifi(Context mContext) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)mContext.
+        getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetInfo != null&& activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            return true;
+        }
+        return false;
     }
 
     private void setTheme(){
@@ -339,18 +354,18 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         mListView = (ListView)findViewById(R.id.item_list_view);
         itemList=new ArrayList<Item>();
 
-        Item home=new Item("知乎·日报",R.drawable.zhihu);
-        Item discovery=new Item("果壳·科学人",R.drawable.guoke);
-        Item follow=new Item("译言·精选",R.drawable.yiyan);
-        Item collection=new Item("虎嗅·资讯",R.drawable.huxiu);
-        Item table=new Item("十五言·推荐",R.drawable.shiwuyan);
-        Item message=new Item("豆瓣阅读·专栏",R.drawable.douban);
-        itemList.add(home);
-        itemList.add(discovery);
-        itemList.add(follow);
-        itemList.add(collection);
-        itemList.add(table);
-        itemList.add(message);
+        Item zhihu=new Item("知乎·日报",R.drawable.zhihu);
+        Item guoke=new Item("果壳·科学人",R.drawable.guoke);
+        Item yiyan=new Item("译言·精选",R.drawable.yiyan);
+        Item huxiu=new Item("虎嗅·资讯",R.drawable.huxiu);
+        Item shiwuyan=new Item("十五言·推荐",R.drawable.shiwuyan);
+        Item douban=new Item("豆瓣阅读·专栏",R.drawable.douban);
+        itemList.add(zhihu);
+        itemList.add(guoke);
+        itemList.add(huxiu);
+        itemList.add(yiyan);
+        itemList.add(shiwuyan);
+        itemList.add(douban);
 
         MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
         mListView.setAdapter(madapter);
@@ -380,7 +395,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         Map<String,String> httpMap3=new HashMap<>();
         httpMap3.put("url","http://select.yeeyan.org/");
-        httpMap3.put("strPattern","<a target=\"_blank\" href=\"(.*?)\">[\\s\\S]*?<img src=\"(.*?)\" />\\s*?</a>\\s*?</div>\\s*?<div class=\"title\">\\s*?<a target=\"_blank\" href=\".*?\">(.*?)</a>");
+        httpMap3.put("strPattern","<a target=\\\"_blank\\\" href=\\\"(.*?)\\\">(.*?)</a>");
         httpMap3.put("UrlHead","");
 
         Map<String,String> httpMap4=new HashMap<>();
@@ -424,15 +439,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 2:
-                setBackgroundColor( R.color.yiyan);
-                setTitleText("译言·精选");
-                 map=httpList.get(2);
-                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
-                break;
-            case 3:
                 setBackgroundColor( R.color.huxiu);
                 setTitleText("虎嗅·资讯");
-                 map=httpList.get(3);
+                map=httpList.get(3);
+                createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
+
+                break;
+            case 3:
+                setBackgroundColor( R.color.yiyan);
+                setTitleText("译言·精选");
+                map=httpList.get(2);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
                 break;
             case 4:
@@ -521,13 +537,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 break;
             case 2:
                 map.put("url", urlHead + mr.group(1));
-                map.put("imageUrl",  mr.group(2));
+                map.put("imageUrl", mr.group(2));
                 map.put("title", mr.group(3));
+
                 break;
             case 3:
                 map.put("url", urlHead + mr.group(1));
-                map.put("imageUrl", mr.group(2));
-                map.put("title", mr.group(3));
+                map.put("title", mr.group(2));
                 break;
             case 4:
                 map.put("url", urlHead + mr.group(1));

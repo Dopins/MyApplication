@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -88,13 +90,13 @@ public class MessageAdapter extends SimpleAdapter {
             }if(!("".equals((String)item.get("note"))||item.get("note")==null)){
                 viewHolder.hasNote.setImageResource(android.R.drawable.ic_menu_edit);
             }
-        }else if(MainActivity.index==4||MainActivity.index==5){
+        }else if(MainActivity.index==3||MainActivity.index==4||MainActivity.index==5||is_no_image(view)){
             viewHolder.image.setVisibility(View.GONE);
             viewHolder.space.setVisibility(View.VISIBLE);
         } else{
 
             final String imgUrl = data.get(position).get("imageUrl").toString();
-            // 给 ImageView 设置一个 tag
+            // 给 ImageView 设置一个tag
             viewHolder.image.setTag(imgUrl);
             // 预设一个图片
             viewHolder.image.setImageResource(R.drawable.background);
@@ -110,6 +112,16 @@ public class MessageAdapter extends SimpleAdapter {
 
         return view;
     }
+    private boolean is_no_image(View view){
+        if(MainActivity.save_flow){
+            if(MainActivity.isWifi(view.getContext())){
+                return  false;
+            }else return true;
+        }else{
+            return false;
+        }
+    }
+
     class ViewHolder{
         LinearLayout labelLayout;
         TextView title;

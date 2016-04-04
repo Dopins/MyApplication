@@ -25,6 +25,7 @@ public class SettingActivity extends Activity implements View.OnClickListener{
     private LinearLayout btn_nightTime;
     private  Switch swi_clean_cache;
     private  Switch swi_clean_cache2;
+    private Switch swi_save_flow;
     private Switch swi_theme;
     private TextView cacheSize;
     private SharedPreferences pref;
@@ -59,6 +60,8 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         swi_clean_cache=(Switch)findViewById(R.id.swi_clean_cache);
         swi_clean_cache2=(Switch)findViewById(R.id.swi_clean_cache2);
         swi_theme=(Switch)findViewById(R.id.swi_theme);
+        swi_save_flow=(Switch)findViewById(R.id.swi_save_flow);
+
         btn_dayTime=(LinearLayout)findViewById(R.id.day_time);
         btn_nightTime=(LinearLayout)findViewById(R.id.night_time);
         btn_dayTime.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +141,8 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         swi_clean_cache.setChecked(pref.getBoolean("clean_when_close", false));
         swi_clean_cache2.setChecked(pref.getBoolean("clean_when_size", false));
         swi_theme.setChecked(pref.getBoolean("auto_theme", false));
+        swi_save_flow.setChecked(pref.getBoolean("save_flow", false));
+
         int dayHour=pref.getInt("day_hour",6);
         int dayMinute=pref.getInt("day_minute",0);
         int nightHour=pref.getInt("night_hour",18);
@@ -160,7 +165,14 @@ public class SettingActivity extends Activity implements View.OnClickListener{
             editor.putBoolean("auto_theme",true);
         else
             editor.putBoolean("auto_theme", false);
-
+        if(swi_save_flow.isChecked()) {
+            MainActivity.save_flow = true;
+            editor.putBoolean("save_flow", true);
+        }
+        else {
+            MainActivity.save_flow = false;
+            editor.putBoolean("save_flow", false);
+        }
         editor.commit();
     }
 

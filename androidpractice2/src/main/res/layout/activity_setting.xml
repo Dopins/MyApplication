@@ -10,6 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dopin.androidpractice2.SettingActivity">
+
     <LinearLayout
         android:id="@+id/clean_cache"
         android:background="@color/white"
@@ -34,6 +35,44 @@
             android:textSize="15sp"
             android:text="0MB"
             android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="省流量模式"
+                android:clickable="false"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="13sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="2dp"
+                android:text="仅在wifi环境下才会加载图片"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:clickable="false"
+            android:layout_height="match_parent" />
+        <Switch
+            android:id="@+id/swi_save_flow"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -92,6 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
     <TextView
         android:textColor="@color/blue"
         android:text="自动切换主题"
