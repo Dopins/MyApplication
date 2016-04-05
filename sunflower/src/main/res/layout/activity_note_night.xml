@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.dopin.sunflower.NoteActivity">
+
+    <LinearLayout
+        android:background="@color/night_title"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <FrameLayout
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@drawable/back2"
+                android:clickable="false"
+                android:layout_width="25dp"
+                android:layout_height="25dp" />
+            >
+        </FrameLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <FrameLayout
+            android:id="@+id/save"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            >
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@android:drawable/ic_menu_save"
+                android:clickable="false"
+                android:layout_width="25dp"
+                android:layout_height="25dp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/note"
+        android:background="@color/night_item_back"
+        android:textColor="@color/night_item_font"
+        android:padding="3dp"
+        android:gravity="start"
+        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
