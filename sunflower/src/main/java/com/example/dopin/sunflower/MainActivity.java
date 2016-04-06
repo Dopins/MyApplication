@@ -1,5 +1,7 @@
 package com.example.dopin.sunflower;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,12 +13,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.format.Time;
 import android.view.ContextMenu;
@@ -25,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,22 +81,25 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private SharedPreferences.Editor editor;
     public static int index=-1;
     private long exitTime = 0;
+    Button btn_collection;
+    Button btn_theme;
+    Button btn_setting;
+    Button btn_about;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         init();
         setHttpList();
         setPage(0);
-    }
-
+}
     private void init(){
         initMenuList();
         listview=(ListView)findViewById(android.R.id.list);
         this.registerForContextMenu(listview);
 
-        dbHelper=new CollDatabaseHelper(this,"Collection.db",null,1);
+        dbHelper=new CollDatabaseHelper(this, "Collection.db",null,1);
 
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
         pref= PreferenceManager.getDefaultSharedPreferences(this);
@@ -112,6 +121,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         findViewById(R.id.btn_collection).setOnClickListener(this);
         findViewById(R.id.btn_about).setOnClickListener(this);
 
+         btn_collection=(Button)findViewById(R.id.btn_collection);
+         btn_theme=(Button)findViewById(R.id.btn_theme);
+         btn_setting=(Button)findViewById(R.id.btn_setting);
+         btn_about = (Button)findViewById(R.id.btn_about);
+
         setTheme();
 
         save_flow=pref.getBoolean("save_flow", false);
@@ -125,7 +139,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         }
         return false;
     }
-
     private void setTheme(){
         boolean auto_theme=pref.getBoolean("auto_theme", false);
         if(auto_theme){
@@ -176,30 +189,24 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             setNightTheme();
         }
     }
+
     private void setNightTheme(){
         night=true;
-
-        Button btn_collection = (Button)findViewById(R.id.btn_collection);
-        Button btn_theme=(Button)findViewById(R.id.btn_theme);
-        Button btn_setting = (Button) findViewById(R.id.btn_setting);
-        Button btn_about=(Button)findViewById(R.id.btn_about);
 
         mSwipeLayout.setColorSchemeResources(R.color.night_title);
         titleLayout.setBackgroundColor(getResources().getColor(R.color.night_title));
         mListView.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         listview.setBackgroundColor(getResources().getColor(R.color.night_item_back));
-        listview.setDivider(new ColorDrawable(getResources().getColor(R.color.night_title)));
-        listview.setDividerHeight(15);
 
         btn_collection.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_theme.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_setting.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_about.setTextColor(getResources().getColor(R.color.night_item_font));
-
         btn_collection.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_theme.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_about.setBackgroundColor(getResources().getColor(R.color.night_item_back));
+
 
         MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
         mListView.setAdapter(madapter);
@@ -214,17 +221,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private void setDayTheme(){
         night=false;
 
-        Button btn_collection=(Button)findViewById(R.id.btn_collection);
-        Button btn_theme=(Button)findViewById(R.id.btn_theme);
-        Button btn_setting=(Button)findViewById(R.id.btn_setting);
-        Button btn_about = (Button)findViewById(R.id.btn_about);
-
         setTitleBackground();
 
         mListView.setBackgroundColor(getResources().getColor(R.color.white));
         listview.setBackgroundColor(getResources().getColor(R.color.white));
-        listview.setDivider(new ColorDrawable(getResources().getColor(R.color.light_gray)));
-        listview.setDividerHeight(15);
 
         btn_collection.setTextColor(getResources().getColor(R.color.menu_item));
         btn_theme.setTextColor(getResources().getColor(R.color.menu_item));
@@ -255,10 +255,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 setBackgroundColor(R.color.guoke);
                 break;
             case 2:
-                setBackgroundColor(R.color.yiyan);
+                setBackgroundColor(R.color.huxiu);
                 break;
             case 3:
-                setBackgroundColor(R.color.huxiu);
+                setBackgroundColor(R.color.yiyan);
                 break;
             case 4:
                 setBackgroundColor(R.color.shiwuyan);
@@ -469,7 +469,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         }
     }
     private void setBackgroundColor(int id){
-        if(night) return;
+       if(night) return;
         titleLayout.setBackgroundColor(getResources().getColor(id));
         mSwipeLayout.setColorSchemeResources(id);
     }

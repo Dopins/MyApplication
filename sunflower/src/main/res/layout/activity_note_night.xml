@@ -6,6 +6,10 @@
     android:orientation="vertical"
     tools:context="com.example.dopin.sunflower.NoteActivity">
 
+    <View
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
     <LinearLayout
         android:background="@color/night_title"
         android:orientation="horizontal"

@@ -2,6 +2,8 @@ package com.example.dopin.sunflower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +48,7 @@ public class MessageAdapter extends SimpleAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         Map<String, Object> item=data.get(position);
          if (convertView == null) {
              view = mInflater.inflate(mResource, parent, false);
@@ -57,7 +59,7 @@ public class MessageAdapter extends SimpleAdapter {
              viewHolder.hasNote=(ImageView)view.findViewById(R.id.note);
              viewHolder.labelLayout=(LinearLayout)view.findViewById(R.id.label_layout);
              viewHolder.space=(TextView)view.findViewById(R.id.space);
-
+             viewHolder.cardView=(CardView)view.findViewById(R.id.cardView);
              view.setTag(viewHolder);
          } else {
              view = convertView;
@@ -65,6 +67,7 @@ public class MessageAdapter extends SimpleAdapter {
          }
         if(MainActivity.night){
             viewHolder.title.setTextColor(view.getResources().getColor(R.color.night_item_font));
+            viewHolder.cardView.setCardBackgroundColor(view.getResources().getColor(R.color.night_item_back));
         }else{
             viewHolder.title.setTextColor(view.getResources().getColor(R.color.menu_item));
         }
@@ -91,6 +94,25 @@ public class MessageAdapter extends SimpleAdapter {
             if (!TextUtils.isEmpty(imgUrl)) {
                 Bitmap bitmap = imageLoader.loadImage(viewHolder.image, imgUrl);
                 if (bitmap != null) {
+                    Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                        @Override
+                        public void onGenerated(Palette palette) {
+                            if (MainActivity.night==true) {
+                                Palette.Swatch DarkMuted = palette.getDarkMutedSwatch();
+                                if(DarkMuted!=null) {
+                                    viewHolder.cardView.setCardBackgroundColor(DarkMuted.getRgb());
+                                    viewHolder.title.setTextColor(DarkMuted.getTitleTextColor());
+                                }
+                            }else if(MainActivity.night==false){
+                                Palette.Swatch LightMuted = palette.getLightMutedSwatch();
+                                if(LightMuted!=null) {
+                                    viewHolder.cardView.setCardBackgroundColor(LightMuted.getRgb());
+                                    viewHolder.title.setTextColor(LightMuted.getTitleTextColor());
+                                }
+                            }
+                        }
+                    });
+
                     viewHolder.image.setImageBitmap(bitmap);
                 }
             }
@@ -111,6 +133,7 @@ public class MessageAdapter extends SimpleAdapter {
 
     class ViewHolder{
         LinearLayout labelLayout;
+        CardView cardView;
         TextView title;
         TextView label;
         ImageView hasNote;
