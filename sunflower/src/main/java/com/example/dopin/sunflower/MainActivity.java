@@ -1,7 +1,5 @@
 package com.example.dopin.sunflower;
 
-import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,18 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.format.Time;
 import android.view.ContextMenu;
@@ -29,8 +24,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,11 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Message;
 
 import com.example.dopin.androidpractice2.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -51,6 +44,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -351,7 +345,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         setPage(index);
     }
 
-    private void initMenuList() {
+    private void initMenuList(){
         mListView = (ListView)findViewById(R.id.item_list_view);
         itemList=new ArrayList<Item>();
 
@@ -592,11 +586,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                                     long id) {
                 Map<String, Object> map = data.get(position);
                 String url = (String) map.get("url");
-                Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                intent.putExtra("url", url);
-                startActivity(intent);
+                String title=(String)map.get("title");
+                intentWebview(title,url);
             }
         });
+    }
+    private void intentWebview(String title,String url){
+        Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+        intent.putExtra("title",title);
+        intent.putExtra("url", url);
+        startActivity(intent);
     }
 
     @Override

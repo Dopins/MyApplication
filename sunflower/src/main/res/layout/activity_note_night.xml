@@ -7,7 +7,7 @@
     tools:context="com.example.dopin.sunflower.NoteActivity">
 
     <View
-        android:background="@color/white"
+        android:background="@color/night_title"
         android:layout_width="match_parent"
         android:layout_height="15dp"/>
     <LinearLayout

@@ -84,7 +84,8 @@ public class MessageAdapter extends SimpleAdapter {
             viewHolder.image.setVisibility(View.GONE);
             viewHolder.space.setVisibility(View.VISIBLE);
         } else{
-
+            viewHolder.image.setVisibility(View.VISIBLE);
+            viewHolder.space.setVisibility(View.GONE);
             final String imgUrl = data.get(position).get("imageUrl").toString();
             // 给 ImageView 设置一个tag
             viewHolder.image.setTag(imgUrl);

@@ -2,8 +2,10 @@ package com.example.dopin.sunflower;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -15,12 +17,13 @@ import com.example.dopin.androidpractice2.R;
 
 public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener {
 
+    private FloatingActionButton fab;
     private WebView webView;
     private SwipeRefreshLayout mSwipeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_web_view);
 
         init();
@@ -43,6 +46,15 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
 
         Intent intent=getIntent();
         String url=intent.getStringExtra("url");
+        String title=intent.getStringExtra("title");
+
+        fab=(FloatingActionButton)findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         webView=(WebView)findViewById(R.id.web_view);
         WebSettings settings = webView.getSettings();
