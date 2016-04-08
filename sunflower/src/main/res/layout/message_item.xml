@@ -28,7 +28,7 @@
             android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textColor="@color/menu_item"
             android:textStyle="bold"
             android:maxLines="2"/>
