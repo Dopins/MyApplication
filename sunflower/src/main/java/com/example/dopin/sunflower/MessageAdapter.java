@@ -77,7 +77,7 @@ public class MessageAdapter extends SimpleAdapter {
             if(!("".equals((String)item.get("label"))||item.get("label")==null)){
                 viewHolder.label.setBackground(view.getResources().getDrawable(R.drawable.label_shape));
                 viewHolder.label.setText((String) item.get("label"));
-            }if(!("".equals((String)item.get("note"))||item.get("note")==null)){
+            }if(!("".equals((String)item.get("have_note"))||item.get("have_note")==null)){
                 viewHolder.hasNote.setImageResource(android.R.drawable.ic_menu_edit);
             }
         }else if(MainActivity.index==3||MainActivity.index==4||MainActivity.index==5||is_no_image(view)){
@@ -90,7 +90,7 @@ public class MessageAdapter extends SimpleAdapter {
             // 给 ImageView 设置一个tag
             viewHolder.image.setTag(imgUrl);
             // 预设一个图片
-            viewHolder.image.setImageResource(R.drawable.background);
+            viewHolder.image.setImageResource(R.drawable.image_back);
 
             if (!TextUtils.isEmpty(imgUrl)) {
                 Bitmap bitmap = imageLoader.loadImage(viewHolder.image, imgUrl);

@@ -1,1 +1,1 @@
-include ':androidpractice', ':sunflower', ':sample', ':library'
+include ':androidpractice', ':sunflower','library'

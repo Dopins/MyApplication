@@ -2,6 +2,7 @@ package com.example.dopin.sunflower;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +55,7 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         editor=pref.edit();
 
         findViewById(R.id.clean_cache).setOnClickListener(this);
+        findViewById(R.id.about).setOnClickListener(this);
         cacheSize=(TextView)findViewById(R.id.cache_size);
         setCacheText();
 
@@ -184,8 +186,15 @@ public class SettingActivity extends Activity implements View.OnClickListener{
                 setCacheText();
                 Toast.makeText(this, "清理成功", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.about:
+                intentAbout();
+                break;
             default:
                 break;
         }
+    }
+    private void intentAbout(){
+        Intent intent=new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 }

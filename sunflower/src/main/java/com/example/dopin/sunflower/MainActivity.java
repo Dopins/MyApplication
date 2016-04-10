@@ -20,6 +20,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.InputFilter;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,29 +39,44 @@ import com.example.dopin.androidpractice2.R;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
+    private String collectrUrl = "http://125.216.249.194:8888//SunflowerService/CollectServlet";
+    private String getCollectionListUrl = "http://125.216.249.194:8888//SunflowerService/GetCollectionListServlet";
+    private String setLabelUrl = "http://125.216.249.194:8888//SunflowerService/SetLabelServlet";
+    private String disCollectUrl = "http://125.216.249.194:8888//SunflowerService/DisCollectServlet";
+    private String title;
+    private String url;
+    private String label;
     public static boolean save_flow;
     public static boolean night;
-    private CollDatabaseHelper dbHelper;
     private LinearLayout titleLayout;
     private TextView titleView;
     private SwipeRefreshLayout mSwipeLayout;
@@ -80,7 +96,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     Button btn_collection;
     Button btn_theme;
     Button btn_setting;
-    Button btn_about;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +115,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         listview=(ListView)findViewById(android.R.id.list);
         this.registerForContextMenu(listview);
 
-        dbHelper=new CollDatabaseHelper(this, "Collection.db",null,1);
-
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
         pref= PreferenceManager.getDefaultSharedPreferences(this);
         editor=pref.edit();
@@ -120,12 +133,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_theme).setOnClickListener(this);
         findViewById(R.id.btn_collection).setOnClickListener(this);
-        findViewById(R.id.btn_about).setOnClickListener(this);
 
          btn_collection=(Button)findViewById(R.id.btn_collection);
          btn_theme=(Button)findViewById(R.id.btn_theme);
          btn_setting=(Button)findViewById(R.id.btn_setting);
-         btn_about = (Button)findViewById(R.id.btn_about);
 
         setTheme();
 
@@ -175,10 +186,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 setCollection();
                 break;
-            case R.id.btn_about:
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                intentAbout();
-                break;
             default:
                 break;
         }
@@ -202,12 +209,9 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         btn_collection.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_theme.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_setting.setTextColor(getResources().getColor(R.color.night_item_font));
-        btn_about.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_collection.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_theme.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.night_item_back));
-        btn_about.setBackgroundColor(getResources().getColor(R.color.night_item_back));
-
 
         MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
         mListView.setAdapter(madapter);
@@ -230,12 +234,10 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         btn_collection.setTextColor(getResources().getColor(R.color.menu_item));
         btn_theme.setTextColor(getResources().getColor(R.color.menu_item));
         btn_setting.setTextColor(getResources().getColor(R.color.menu_item));
-        btn_about.setTextColor(getResources().getColor(R.color.menu_item));
 
         btn_collection.setBackgroundColor(getResources().getColor(R.color.white));
         btn_theme.setBackgroundColor(getResources().getColor(R.color.white));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.white));
-        btn_about.setBackgroundColor(getResources().getColor(R.color.white));
 
         MenuAdapter madapter = new MenuAdapter(this,R.layout.menu_item,itemList);
         mListView.setAdapter(madapter);
@@ -277,50 +279,19 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         Intent intent=new Intent(this,SettingActivity.class);
         startActivity(intent);
     }
-    private void intentAbout(){
-        Intent intent=new Intent(this, AboutActivity.class);
-        startActivity(intent);
-    }
     private void setCollection(){
-        index=6;
-        mSwipeLayout.setRefreshing(false);
-        data.clear();
-        data=getCollectionData();
-        MessageAdapter adapter = new MessageAdapter(this, data,
-                R.layout.message_item, new String[]{"title","label"},
-                new int[]{R.id.title,R.id.message_label});
-        listview.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        setBackgroundColor( R.color.collection);
-        setTitleText("我的收藏");
-    }
-    private List<Map<String, Object>> getCollectionData(){
-        titleList.clear();                      //title只存储当前列表的数据，启动新的createPage时清空titleList
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        Cursor cursor=db.query("Collection",null,null,null,null,null,null);
-        if(cursor.moveToFirst()){
-            do{
-                String title=cursor.getString(cursor.getColumnIndex("title"));
-                String url=cursor.getString(cursor.getColumnIndex("url"));
-                String label=cursor.getString(cursor.getColumnIndex("label"));
-                String note=cursor.getString(cursor.getColumnIndex("note"));
-
-                Map<String,Object> map=new HashMap<>();
-                map.put("title",title);
-                map.put("url",url);
-                map.put("label",label);
-                map.put("note",note);
-
-                titleList.add(title);
-                titleList.add(url);
-
-                result.add(map);
-            }while(cursor.moveToNext());
+        if(LeftMenuFrag.user_account.equals("")){
+            Toast.makeText(this,"请先登录账号",Toast.LENGTH_SHORT).show();
+            return;
         }
-        return result;
+        index=6;
+        mSwipeLayout.setRefreshing(true);
+        data.clear();
+        setBackgroundColor(R.color.collection);
+        setTitleText("我的收藏");
+        new Thread(getCollectListTask).start();
     }
+
     @Override
     public void onDestroy(){
         cleanCache();
@@ -346,7 +317,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void onRefresh(){
         if(index==6){
             setCollection();
-            mSwipeLayout.setRefreshing(false);
             return;
         }
         setPage(index);
@@ -478,10 +448,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         titleView.setText(text);
     }
     private  void createPage(String url,String strPattern,String urlHead){
+        if(data!=null){
+            data.clear();
+            MessageAdapter adapter = new MessageAdapter(this, data,
+                    R.layout.message_item, new String[]{"title"},
+                    new int[]{R.id.title});
+            listview.setAdapter(adapter);//清空listview数据
+        }
         mSwipeLayout.setRefreshing(true);
         handler = getHandler();//处理message
         ThreadStart(url, strPattern, urlHead);//开启线程
-
     }
     /**
      * 新开辟线程处理联网操作
@@ -524,6 +500,56 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         }
         return result;
     }
+
+    /**
+     * get请求URL，失败时尝试三次
+     */
+    private String http_get(String url) {
+        final int RETRY_TIME = 3;
+        HttpClient httpClient = null;
+        HttpGet httpGet = null;
+
+        String responseBody = "";
+        int time = 0;
+        do {
+            try {
+                httpClient = getHttpClient();
+                httpGet = new HttpGet(url);
+                HttpResponse response = httpClient.execute(httpGet);
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    //用utf-8编码转化为字符串
+                    byte[] bResult = EntityUtils.toByteArray(response.getEntity());
+                    if (bResult != null) {
+                        responseBody = new String(bResult, "utf-8");
+                    }
+                }
+                break;
+            } catch (IOException e) {
+                time++;
+                if (time < RETRY_TIME) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                    }
+                    continue;
+                }
+                e.printStackTrace();
+            } finally {
+                httpClient = null;
+            }
+        } while (time < RETRY_TIME);
+
+        return responseBody;
+    }
+
+    private HttpClient getHttpClient() {
+        HttpParams httpParams = new BasicHttpParams();
+        //设定连接超时和读取超时时间
+        HttpConnectionParams.setConnectionTimeout(httpParams, 6000);
+        HttpConnectionParams.setSoTimeout(httpParams, 30000);
+        return new DefaultHttpClient(httpParams);
+    }
+
     private  Map<String, Object> getMap(String urlHead,MatchResult mr){
         Map<String, Object> map = new HashMap<String, Object>();
         switch (index){
@@ -593,8 +619,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                                     long id) {
                 Map<String, Object> map = data.get(position);
                 String url = (String) map.get("url");
-                String title=(String)map.get("title");
-                intentWebview(title,url);
+                String title = (String) map.get("title");
+                intentWebview(title, url);
             }
         });
     }
@@ -608,12 +634,16 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                    ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(0, 1, Menu.NONE, "收藏");
-        menu.add(0, 2, Menu.NONE, "取消收藏");
         if(index==6){
+            menu.add(0, 2, Menu.NONE, "取消收藏");
             menu.add(0, 3, Menu.NONE, "标签");
             menu.add(0, 4, Menu.NONE, "笔记");
+        }else {
+            menu.add(0, 1, Menu.NONE, "收藏");
+            menu.add(0, 2, Menu.NONE, "取消收藏");
         }
+
+
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -639,33 +669,28 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
     private void setNote(int position){
         Map<String, Object> map = data.get(position);
-        final String title = (String) map.get("title");
+        title = (String) map.get("title");
         intentNoteActivity(title);
     }
     private void intentNoteActivity(String title){
         Intent intent=new Intent(MainActivity.this,NoteActivity.class);
-        intent.putExtra("title",title);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
     private void setLabel(int position){
         Map<String, Object> map = data.get(position);
-        final String title = (String) map.get("title");
+        title = (String) map.get("title");
 
-        final EditText label=new EditText(this);
-        label.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});//字数不能超过10
+        final EditText labelText=new EditText(this);
+        labelText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});//字数不能超过10
 
         new AlertDialog.Builder(this).setTitle("设置标签").setIcon(android.R.drawable.ic_dialog_info)
-                .setView(label)
+                .setView(labelText)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String labelStr=label.getText().toString();
-
-                        SQLiteDatabase db=dbHelper.getWritableDatabase();
-                        ContentValues values=new ContentValues();
-                        values.put("label", labelStr);
-                        db.update("Collection", values, "title= ? ", new String[]{title});
-                        setCollection();
+                        label=labelText.getText().toString();
+                        new Thread(setLabelTask).start();
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -678,99 +703,28 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
     }
     private void collect(int position){
-        Map<String, Object> map = data.get(position);
-        String title = (String) map.get("title");
-        String url = (String) map.get("url");
-        if(hasCollected(title)){
-            Toast.makeText(MainActivity.this, "该条目已收藏", Toast.LENGTH_SHORT).show();
-        }else{
-            putCollection(title, url);
-            if(index==6) setCollection();
-            Toast.makeText(MainActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+        if(LeftMenuFrag.user_account.equals("")){
+            Toast.makeText(this,"请先登录账号",Toast.LENGTH_SHORT).show();
+            return;
         }
+        Map<String, Object> map = data.get(position);
+        title = (String) map.get("title");
+        url = (String) map.get("url");
+
+        new Thread(collectTask).start();
     }
     private void discollect(int position){
+        if(LeftMenuFrag.user_account.equals("")){
+            Toast.makeText(this,"请先登录账号",Toast.LENGTH_SHORT).show();
+            return;
+        }
         Map<String, Object> map = data.get(position);
-        String title = (String) map.get("title");
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        int row=db.delete("Collection","title = ?",new String[]{title});
-        if(row==0){
-            Toast.makeText(MainActivity.this, "该条目未收藏", Toast.LENGTH_SHORT).show();
-        }else{
-            if(index==6) setCollection();
-            Toast.makeText(MainActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
-        }
+        title = (String) map.get("title");
+
+        new Thread(disCollectTask).start();
     }
 
-    private boolean hasCollected(String title){
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        Cursor cursor=db.query("Collection",null,null,null,null,null,null);
-        if(cursor.moveToFirst()){
-            do{
-                String titleGet=cursor.getString(cursor.getColumnIndex("title"));
-                if(title.equals(titleGet)) return true;
 
-            }while(cursor.moveToNext());
-        }
-        return false;
-    }
-    private void putCollection(String title,String url){
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        ContentValues values=new ContentValues();
-        values.put("title",title);
-        values.put("url", url);
-        db.insert("Collection", null, values);
-        values.clear();
-    }
-
-    /**
-     * get请求URL，失败时尝试三次
-     */
-    private String http_get(String url) {
-        final int RETRY_TIME = 3;
-        HttpClient httpClient = null;
-        HttpGet httpGet = null;
-
-        String responseBody = "";
-        int time = 0;
-        do {
-            try {
-                httpClient = getHttpClient();
-                httpGet = new HttpGet(url);
-                HttpResponse response = httpClient.execute(httpGet);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    //用utf-8编码转化为字符串
-                    byte[] bResult = EntityUtils.toByteArray(response.getEntity());
-                    if (bResult != null) {
-                        responseBody = new String(bResult, "utf-8");
-                    }
-                }
-                break;
-            } catch (IOException e) {
-                time++;
-                if (time < RETRY_TIME) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e1) {
-                    }
-                    continue;
-                }
-                e.printStackTrace();
-            } finally {
-                httpClient = null;
-            }
-        } while (time < RETRY_TIME);
-
-        return responseBody;
-    }
-
-    private HttpClient getHttpClient() {
-        HttpParams httpParams = new BasicHttpParams();
-        //设定连接超时和读取超时时间
-        HttpConnectionParams.setConnectionTimeout(httpParams, 6000);
-        HttpConnectionParams.setSoTimeout(httpParams, 30000);
-        return new DefaultHttpClient(httpParams);
-    }
 
     @Override
     public void onBackPressed(){
@@ -797,5 +751,236 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
     public void menu(View view){
         mDrawerLayout.openDrawer(Gravity.LEFT);
+    }
+    private String getFrom(){
+        switch (index){
+            case 0:
+                return "知乎";
+            case 1:
+                return "果壳";
+            case 2:
+                return "虎嗅";
+            case 3:
+                return "译言";
+            case 4:
+                return "十五言";
+            case 5:
+                return "豆瓣阅读";
+            default:
+             return "";
+        }
+    }
+    Handler handlerCollect = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONObject jo=(JSONObject)msg.obj;
+            try{
+                if(jo.getBoolean("result")){
+                    Toast.makeText(MainActivity.this,"收藏成功",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity.this,"本篇已收藏",Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
+
+            }
+        }
+    };
+    Handler handlerDisCollect = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONObject jo=(JSONObject)msg.obj;
+            try{
+                if(jo.getBoolean("result")){
+                    Toast.makeText(MainActivity.this,"取消收藏成功",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity.this,"本篇未收藏",Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
+
+            }
+        }
+    };
+
+    Runnable disCollectTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+            NameValuePair pair2 = new BasicNameValuePair("title", title);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(disCollectUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONObject jsonObject=parseJSON(response);
+                    Message msg = new Message();
+                    msg.obj=jsonObject;
+                    handlerDisCollect.sendMessage(msg);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Runnable collectTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+            NameValuePair pair2 = new BasicNameValuePair("title", title);
+            NameValuePair pair3 = new BasicNameValuePair("url", url);
+            NameValuePair pair4 = new BasicNameValuePair("from", getFrom());
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            pairList.add(pair3);
+            pairList.add(pair4);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(collectrUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONObject jsonObject=parseJSON(response);
+                    Message msg = new Message();
+                    msg.obj=jsonObject;
+                    handlerCollect.sendMessage(msg);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Runnable setLabelTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+            NameValuePair pair2 = new BasicNameValuePair("title", title);
+            NameValuePair pair3 = new BasicNameValuePair("label", label);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            pairList.add(pair3);
+            try {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(setLabelUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                httpClient.execute(httpPost);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Handler handlerGetCollectionList = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONArray jsonArray=(JSONArray)msg.obj;
+            try{
+                for(int i=0;i<jsonArray.length();i++){
+                    JSONObject jsonObject=jsonArray.getJSONObject(i);
+                    Map<String,Object> map=new HashMap();
+                    map.put("title",(Object)jsonObject.getString("title"));
+                    map.put("url", (Object) jsonObject.getString("url"));
+                    map.put("from",(Object)jsonObject.getString("from"));
+                    map.put("label",(Object)jsonObject.getString("label"));
+                    map.put("have_note", (Object) jsonObject.getString("have_note"));
+                    data.add(map);
+                }
+            }catch (Exception e){
+            }
+            MessageAdapter adapter = new MessageAdapter(MainActivity.this, data,R.layout.message_item,
+                    new String[]{"title","label"},
+                    new int[]{R.id.title,R.id.message_label});
+            listview.setAdapter(adapter);
+            mSwipeLayout.setRefreshing(false);
+        }
+    };
+
+    Runnable getCollectListTask = new Runnable() {
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(getCollectionListUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONArray jsonArray=parseJSONArray(response);
+                    Message msg = new Message();
+                    msg.obj=jsonArray;
+                    handlerGetCollectionList.sendMessage(msg);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private JSONArray parseJSONArray(String jsonData){
+        try{
+            JSONArray jsonArray=new JSONArray(jsonData);
+            return jsonArray;
+        }catch (Exception e){
+        }
+        return null;
+    }
+
+    private JSONObject parseJSON(String jsonData){
+        JSONObject jsonObject;
+        try{
+            jsonObject=new JSONObject(jsonData);
+            return jsonObject;
+        }catch (Exception e){
+
+        }
+        return null;
     }
 }
