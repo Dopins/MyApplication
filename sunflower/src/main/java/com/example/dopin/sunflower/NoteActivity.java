@@ -33,8 +33,8 @@ import java.util.List;
 
 public class NoteActivity extends Activity {
 
-    private String getNoteUrl = "http://125.216.249.194:8888//SunflowerService/GetNoteServlet";
-    private String setNoteUrl = "http://125.216.249.194:8888//SunflowerService/SetNoteServlet";
+    private String getNoteUrl = MainActivity.serverIP+"/SunflowerService/GetNoteServlet";
+    private String setNoteUrl = MainActivity.serverIP+"/SunflowerService/SetNoteServlet";
     private FrameLayout back;
     private FrameLayout save;
     private String title;

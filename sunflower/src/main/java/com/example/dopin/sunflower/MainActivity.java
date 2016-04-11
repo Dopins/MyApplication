@@ -68,10 +68,11 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
-    private String collectrUrl = "http://125.216.249.194:8888//SunflowerService/CollectServlet";
-    private String getCollectionListUrl = "http://125.216.249.194:8888//SunflowerService/GetCollectionListServlet";
-    private String setLabelUrl = "http://125.216.249.194:8888//SunflowerService/SetLabelServlet";
-    private String disCollectUrl = "http://125.216.249.194:8888//SunflowerService/DisCollectServlet";
+    public static String serverIP="http://125.216.249.194:8888";
+    private String collectUrl = serverIP+"/SunflowerService/CollectServlet";
+    private String getCollectionListUrl = serverIP+"/SunflowerService/GetCollectionListServlet";
+    private String setLabelUrl =serverIP+ "/SunflowerService/SetLabelServlet";
+    private String disCollectUrl = serverIP+"/SunflowerService/DisCollectServlet";
     private String title;
     private String url;
     private String label;
@@ -93,7 +94,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private SharedPreferences.Editor editor;
     public static int index=-1;
     private long exitTime = 0;
-    Button btn_collection;
     Button btn_theme;
     Button btn_setting;
     @Override
@@ -132,9 +132,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_theme).setOnClickListener(this);
-        findViewById(R.id.btn_collection).setOnClickListener(this);
 
-         btn_collection=(Button)findViewById(R.id.btn_collection);
          btn_theme=(Button)findViewById(R.id.btn_theme);
          btn_setting=(Button)findViewById(R.id.btn_setting);
 
@@ -182,10 +180,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 changeTheme();
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.btn_collection:
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                setCollection();
-                break;
             default:
                 break;
         }
@@ -206,10 +200,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         mListView.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         listview.setBackgroundColor(getResources().getColor(R.color.night_item_back));
 
-        btn_collection.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_theme.setTextColor(getResources().getColor(R.color.night_item_font));
         btn_setting.setTextColor(getResources().getColor(R.color.night_item_font));
-        btn_collection.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_theme.setBackgroundColor(getResources().getColor(R.color.night_item_back));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.night_item_back));
 
@@ -231,11 +223,9 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         mListView.setBackgroundColor(getResources().getColor(R.color.white));
         listview.setBackgroundColor(getResources().getColor(R.color.white));
 
-        btn_collection.setTextColor(getResources().getColor(R.color.menu_item));
         btn_theme.setTextColor(getResources().getColor(R.color.menu_item));
         btn_setting.setTextColor(getResources().getColor(R.color.menu_item));
 
-        btn_collection.setBackgroundColor(getResources().getColor(R.color.white));
         btn_theme.setBackgroundColor(getResources().getColor(R.color.white));
         btn_setting.setBackgroundColor(getResources().getColor(R.color.white));
 
@@ -284,6 +274,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             Toast.makeText(this,"请先登录账号",Toast.LENGTH_SHORT).show();
             return;
         }
+        clearListView();
         index=6;
         mSwipeLayout.setRefreshing(true);
         data.clear();
@@ -415,7 +406,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 setTitleText("虎嗅·资讯");
                 map=httpList.get(3);
                 createPage(map.get("url"), map.get("strPattern"),map.get("UrlHead"));
-
                 break;
             case 3:
                 setBackgroundColor( R.color.yiyan);
@@ -448,6 +438,12 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         titleView.setText(text);
     }
     private  void createPage(String url,String strPattern,String urlHead){
+        clearListView();
+        mSwipeLayout.setRefreshing(true);
+        handler = getHandler();//处理message
+        ThreadStart(url, strPattern, urlHead);//开启线程
+    }
+    private void clearListView(){
         if(data!=null){
             data.clear();
             MessageAdapter adapter = new MessageAdapter(this, data,
@@ -455,9 +451,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                     new int[]{R.id.title});
             listview.setAdapter(adapter);//清空listview数据
         }
-        mSwipeLayout.setRefreshing(true);
-        handler = getHandler();//处理message
-        ThreadStart(url, strPattern, urlHead);//开启线程
     }
     /**
      * 新开辟线程处理联网操作
@@ -752,7 +745,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void menu(View view){
         mDrawerLayout.openDrawer(Gravity.LEFT);
     }
-    private String getFrom(){
+    public static String getFrom(){
         switch (index){
             case 0:
                 return "知乎";
@@ -856,7 +849,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             try
             {
                 HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
-                HttpPost httpPost = new HttpPost(collectrUrl);
+                HttpPost httpPost = new HttpPost(collectUrl);
                 httpPost.setEntity(requestHttpEntity);
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -909,6 +902,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            titleList.clear();//title只存储当前列表的数据，启动新的createPage时清空titleList
             JSONArray jsonArray=(JSONArray)msg.obj;
             try{
                 for(int i=0;i<jsonArray.length();i++){
@@ -918,8 +912,11 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                     map.put("url", (Object) jsonObject.getString("url"));
                     map.put("from",(Object)jsonObject.getString("from"));
                     map.put("label",(Object)jsonObject.getString("label"));
-                    map.put("have_note", (Object) jsonObject.getString("have_note"));
+                    map.put("have_note", (Object) jsonObject.getBoolean("have_note"));
                     data.add(map);
+
+                    titleList.add(jsonObject.getString("title"));
+                    titleList.add(jsonObject.getString("url"));
                 }
             }catch (Exception e){
             }

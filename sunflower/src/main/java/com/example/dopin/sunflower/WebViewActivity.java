@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
@@ -19,15 +21,32 @@ import android.widget.Toast;
 import com.example.dopin.androidpractice2.R;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private CollDatabaseHelper dbHelper;
+    private String collectUrl =MainActivity.serverIP+ "/SunflowerService/CollectServlet";
     private WebView webView;
     private SwipeRefreshLayout mSwipeLayout;
+    String title;
+    String url;
+    boolean showResult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +68,7 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
     public void onRefresh(){
         mSwipeLayout.setRefreshing(false);
     }
-    private void initFloatingButton(final String title,final String url){
+    private void initFloatingButton(){
         final com.getbase.floatingactionbutton.FloatingActionButton actionA = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_a);
         actionA.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +81,7 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
         actionB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                collect(title,url);
+                collect();
             }
         });
 
@@ -92,53 +111,96 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
     }
 
     private void setNote(String title){
-        if(hasCollected(title)){
-            intentNoteActivity(title);
-        }else{
-            Toast.makeText(WebViewActivity.this, "请先收藏本篇", Toast.LENGTH_SHORT).show();
-        }
+        showResult=false;
+        collect();
+        intentNoteActivity(title);
     }
     private void intentNoteActivity(String title){
         Intent intent=new Intent(WebViewActivity.this,NoteActivity.class);
         intent.putExtra("title",title);
         startActivity(intent);
     }
-    private void collect(String title,String url){
-        if(hasCollected(title)){
-            Toast.makeText(WebViewActivity.this, "本篇已收藏", Toast.LENGTH_SHORT).show();
-        }else{
-            putCollection(title, url);
-            Toast.makeText(WebViewActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private boolean hasCollected(String title){
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        Cursor cursor=db.query("Collection",null,null,null,null,null,null);
-        if(cursor.moveToFirst()){
-            do{
-                String titleGet=cursor.getString(cursor.getColumnIndex("title"));
-                if(title.equals(titleGet)) return true;
 
-            }while(cursor.moveToNext());
+    private void collect(){
+        if(LeftMenuFrag.user_account.equals("")){
+            Toast.makeText(this,"请先登录账号",Toast.LENGTH_SHORT).show();
+            return;
         }
-        return false;
+        new Thread(collectTask).start();
     }
-    private void putCollection(String title,String url){
-        SQLiteDatabase db=dbHelper.getWritableDatabase();
-        ContentValues values=new ContentValues();
-        values.put("title",title);
-        values.put("url", url);
-        db.insert("Collection", null, values);
-        values.clear();
-    }
+    Handler handlerCollect = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONObject jo=(JSONObject)msg.obj;
+            try{
+                if(jo.getBoolean("result")){
+                    Toast.makeText(WebViewActivity.this,"收藏成功",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(WebViewActivity.this,"本篇已收藏",Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
 
+            }
+        }
+    };
+    Runnable collectTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+            NameValuePair pair2 = new BasicNameValuePair("title", title);
+            NameValuePair pair3 = new BasicNameValuePair("url", url);
+            NameValuePair pair4 = new BasicNameValuePair("from", MainActivity.getFrom());
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            pairList.add(pair3);
+            pairList.add(pair4);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList,HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(collectUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                if(!showResult) {
+                    showResult=true;
+                    return;
+                }
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONObject jsonObject=parseJSON(response);
+                    Message msg = new Message();
+                    msg.obj=jsonObject;
+                    handlerCollect.sendMessage(msg);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+    private JSONObject parseJSON(String jsonData){
+        JSONObject jsonObject;
+        try{
+            jsonObject=new JSONObject(jsonData);
+            return jsonObject;
+        }catch (Exception e){
+
+        }
+        return null;
+    }
     private void init(){
-        dbHelper=new CollDatabaseHelper(this, "Collection.db",null,1);
-
+        showResult=true;
         Intent intent=getIntent();
-        String url=intent.getStringExtra("url");
-        String title=intent.getStringExtra("title");
-
+        url=intent.getStringExtra("url");
+        title=intent.getStringExtra("title");
 
         webView=(WebView)findViewById(R.id.web_view);
         WebSettings settings = webView.getSettings();
@@ -159,6 +221,6 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
         mSwipeLayout.setProgressViewOffset(false, 0, 20);
         mSwipeLayout.setRefreshing(true);
 
-        initFloatingButton(title,url);
+        initFloatingButton();
     }
 }

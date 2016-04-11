@@ -60,6 +60,7 @@ public class MessageAdapter extends SimpleAdapter {
              viewHolder.labelLayout=(LinearLayout)view.findViewById(R.id.label_layout);
              viewHolder.space=(TextView)view.findViewById(R.id.space);
              viewHolder.cardView=(CardView)view.findViewById(R.id.cardView);
+             viewHolder.from=(TextView)view.findViewById(R.id.from);
              view.setTag(viewHolder);
          } else {
              view = convertView;
@@ -74,10 +75,12 @@ public class MessageAdapter extends SimpleAdapter {
         if(MainActivity.index==6){
             viewHolder.labelLayout.setVisibility(View.VISIBLE);
             viewHolder.image.setVisibility(View.GONE);
+            viewHolder.from.setVisibility(View.VISIBLE);
+            viewHolder.from.setText((String)item.get("from"));
             if(!("".equals((String)item.get("label"))||item.get("label")==null)){
                 viewHolder.label.setBackground(view.getResources().getDrawable(R.drawable.label_shape));
                 viewHolder.label.setText((String) item.get("label"));
-            }if(!("".equals((String)item.get("have_note"))||item.get("have_note")==null)){
+            }if(!(boolean)item.get("have_note")){
                 viewHolder.hasNote.setImageResource(android.R.drawable.ic_menu_edit);
             }
         }else if(MainActivity.index==3||MainActivity.index==4||MainActivity.index==5||is_no_image(view)){
@@ -95,6 +98,7 @@ public class MessageAdapter extends SimpleAdapter {
             if (!TextUtils.isEmpty(imgUrl)) {
                 Bitmap bitmap = imageLoader.loadImage(viewHolder.image, imgUrl);
                 if (bitmap != null) {
+
                     Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -114,9 +118,9 @@ public class MessageAdapter extends SimpleAdapter {
                         }
                     });
 
-                    viewHolder.image.setImageBitmap(bitmap);
-                }
-            }
+            viewHolder.image.setImageBitmap(bitmap);
+        }
+    }
         }
         viewHolder.title.setText((String)item.get("title"));
 
@@ -137,6 +141,7 @@ public class MessageAdapter extends SimpleAdapter {
         CardView cardView;
         TextView title;
         TextView label;
+        TextView from;
         ImageView hasNote;
         ImageView image;
         TextView space;

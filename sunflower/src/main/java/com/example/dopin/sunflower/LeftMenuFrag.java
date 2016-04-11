@@ -1,31 +1,25 @@
 package com.example.dopin.sunflower;
 
 import android.app.Fragment;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.example.dopin.androidpractice2.R;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -37,7 +31,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +42,8 @@ import java.util.List;
 public class LeftMenuFrag extends Fragment implements View.OnClickListener{
 
     public static String user_account;
-    private String registerUrl = "http://125.216.249.194:8888//SunflowerService/RegisterServlet";
-    private String loginUrl = "http://125.216.249.194:8888//SunflowerService/LoginServlet";
+    private String registerUrl = MainActivity.serverIP+"/SunflowerService/RegisterServlet";
+    private String loginUrl = MainActivity.serverIP+"/SunflowerService/LoginServlet";
     ProgressDialog progressDialog;
     String account;
     String password;
@@ -79,14 +72,22 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
     public void onClick(View view){
         switch (view.getId()){
             case R.id.user_image:
-                showLogin();
+                if(user_account.equals("")){
+                    showLogin();
+                }else{
+                    intentPersonActivity();
+                }
                 break;
             case R.id.logout:
-                logout();
+                showConfirmDialog();
                 break;
             default:
                 break;
         }
+    }
+    private void intentPersonActivity(){
+        Intent intent=new Intent(view.getContext(),PersonActivity.class);
+        startActivity(intent);
     }
     private void saveAccount(){
         editor.putString("user_account", user_account);
@@ -97,6 +98,23 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
         if(!user_account.equals("")){
             ID.setText(user_account);
         }
+    }
+    private void showConfirmDialog(){
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("退出登录")
+                .setMessage("是否确认退出登录")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        logout();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .show();
     }
     private void logout(){
         user_account="";

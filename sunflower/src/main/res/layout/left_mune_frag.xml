@@ -25,40 +25,26 @@
             android:layout_height="1dp"
             android:background="@color/gray" />
         <Button
-            android:id="@+id/btn_collection"
-            android:text="我的收藏"
-            android:drawableLeft="@android:drawable/btn_star_big_on"
-            android:paddingLeft="10dp"
-            android:layout_weight="0.8"
-            android:background="@color/white"
-            android:textColor="@color/menu_item"
-            android:textSize="15sp"
-            android:gravity="left|center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            />
-        <Button
             android:id="@+id/btn_theme"
-            android:drawableLeft="@android:drawable/ic_popup_sync"
             android:text="切换主题"
             android:paddingLeft="10dp"
             android:textColor="@color/menu_item"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:gravity="left|center_vertical"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"/>
+            android:layout_weight="1"/>
             <Button
                 android:id="@+id/btn_setting"
                 android:text="设置"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:textColor="@color/menu_item"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:gravity="left|center_vertical"
                 android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.8" />
+                android:layout_weight="1" />
 </LinearLayout>
 </LinearLayout>
