@@ -89,8 +89,11 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
         }
     }
     private void showChoose(){
-        final View chooseView = LayoutInflater.from(view.getContext()).inflate(R.layout.activity_choose, null);
-        final AlertDialog.Builder customDia = new AlertDialog.Builder(view.getContext());
+         View chooseView = LayoutInflater.from(view.getContext()).inflate(R.layout.activity_choose, null);
+         AlertDialog.Builder customDia = new AlertDialog.Builder(view.getContext());
+        customDia.setTitle("选择");
+        customDia.setView(chooseView);
+        final AlertDialog chooseDia=customDia.create();
 
         Button changeNickname=(Button)chooseView.findViewById(R.id.btn_nick_name);
         Button changeHeadImage=(Button)chooseView.findViewById(R.id.btn_head_image);
@@ -100,24 +103,23 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 showChangeNicknameDia();
+                chooseDia.dismiss();
             }
         });
         changeHeadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                chooseDia.dismiss();
             }
         });
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showChangePasswordDia();
+                chooseDia.dismiss();
             }
         });
-        customDia.setTitle("选择");
-
-        customDia.setView(chooseView);
-        customDia.create().show();
+        chooseDia.show();
     }
     private void showChangeNicknameDia(){
         final EditText nicknameText=new EditText(view.getContext());

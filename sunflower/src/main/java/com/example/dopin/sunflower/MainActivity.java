@@ -277,7 +277,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         clearListView();
         index=6;
         mSwipeLayout.setRefreshing(true);
-        data.clear();
         setBackgroundColor(R.color.collection);
         setTitleText("我的收藏");
         new Thread(getCollectListTask).start();

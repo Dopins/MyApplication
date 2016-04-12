@@ -16,6 +16,7 @@
                 android:digits="@string/digits"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:maxLength="15"
                 android:hint="账号"
                 android:padding="10dp"
                 android:maxLines="1"
@@ -27,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="密码"
+                android:maxLength="15"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -37,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="确认密码"
+                android:maxLength="15"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />

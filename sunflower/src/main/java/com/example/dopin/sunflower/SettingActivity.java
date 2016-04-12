@@ -5,12 +5,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,8 +22,25 @@ import android.widget.Toast;
 
 import com.example.dopin.androidpractice2.R;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SettingActivity extends Activity implements View.OnClickListener{
 
+    private String feedbackUrl=MainActivity.serverIP+"/SunflowerService/FeedbackServlet";
+    String feedback;
     private TimePicker timePicker;
     private LinearLayout btn_dayTime;
     private LinearLayout btn_nightTime;
@@ -56,6 +76,7 @@ public class SettingActivity extends Activity implements View.OnClickListener{
 
         findViewById(R.id.clean_cache).setOnClickListener(this);
         findViewById(R.id.about).setOnClickListener(this);
+        findViewById(R.id.feedback).setOnClickListener(this);
         cacheSize=(TextView)findViewById(R.id.cache_size);
         setCacheText();
 
@@ -116,7 +137,7 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         editor.putInt("day_hour", hour);
         editor.putInt("day_minute", minute);
         editor.commit();
-        dayTimeView.setText(getTimeString(hour,minute));
+        dayTimeView.setText(getTimeString(hour, minute));
     }
     private String getTimeString(int hour,int minute){
         if(minute<10){
@@ -130,7 +151,7 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         editor.putInt("night_hour", hour);
         editor.putInt("night_minute", minute);
         editor.commit();
-        nightTimeView.setText(getTimeString(hour,minute));
+        nightTimeView.setText(getTimeString(hour, minute));
     }
 
     @Override
@@ -151,8 +172,8 @@ public class SettingActivity extends Activity implements View.OnClickListener{
         int nightMinute=pref.getInt("night_minute",0);
         TextView dayTimeView=(TextView)findViewById(R.id.day_time_view);
         TextView nightTimeView=(TextView)findViewById(R.id.night_time_view);
-        dayTimeView.setText(getTimeString(dayHour,dayMinute));
-        nightTimeView.setText(getTimeString(nightHour,nightMinute));
+        dayTimeView.setText(getTimeString(dayHour, dayMinute));
+        nightTimeView.setText(getTimeString(nightHour, nightMinute));
     }
     private void putSetting(){
         if(swi_clean_cache.isChecked())
@@ -187,14 +208,66 @@ public class SettingActivity extends Activity implements View.OnClickListener{
                 Toast.makeText(this, "清理成功", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.about:
-                intentAbout();
+                showAbout();
+                break;
+            case R.id.feedback:
+                showFeedback();
                 break;
             default:
                 break;
         }
     }
-    private void intentAbout(){
-        Intent intent=new Intent(this, AboutActivity.class);
-        startActivity(intent);
+    private void showAbout(){
+        View aboutView = LayoutInflater.from(this).inflate(R.layout.about, null);
+        AlertDialog.Builder customDia = new AlertDialog.Builder(this);
+        customDia.setTitle("关于");
+        customDia.setView(aboutView);
+        AlertDialog feedbackDia=customDia.create();
+        feedbackDia.show();
     }
+    private void showFeedback(){
+        View feedbackView = LayoutInflater.from(this).inflate(R.layout.feedback, null);
+        AlertDialog.Builder customDia = new AlertDialog.Builder(this);
+        customDia.setTitle("意见反馈");
+        customDia.setView(feedbackView);
+        final AlertDialog feedbackDia=customDia.create();
+
+        final EditText feedbackText=(EditText)feedbackView.findViewById(R.id.feedback_text);
+        Button send=(Button)feedbackView.findViewById(R.id.btn_send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                feedback=feedbackText.getText().toString();
+                new Thread(feedbackTask).start();
+                feedbackDia.dismiss();
+            }
+        });
+        feedbackDia.show();
+    }
+
+    Runnable feedbackTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", LeftMenuFrag.user_account);
+            NameValuePair pair2 = new BasicNameValuePair("feedback", feedback);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(feedbackUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                httpClient.execute(httpPost);
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
 }

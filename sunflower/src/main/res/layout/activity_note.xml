@@ -7,11 +7,11 @@
     tools:context="com.example.dopin.sunflower.NoteActivity">
 
     <View
-        android:background="@color/white"
+        android:background="@color/collection"
         android:layout_width="match_parent"
         android:layout_height="15dp"/>
     <LinearLayout
-        android:background="@color/white"
+        android:background="@color/collection"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
@@ -23,13 +23,16 @@
             android:layout_gravity="center"
             android:background="@drawable/back2"
             android:clickable="false"
-            android:layout_width="25dp"
-            android:layout_height="25dp" />
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
             >
         </FrameLayout>
-        <View
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:text="笔记"
+            android:textSize="18sp"
+            android:gravity="center"
             android:layout_weight="1"/>
         <FrameLayout
             android:id="@+id/save"
@@ -47,9 +50,10 @@
 
     <EditText
         android:id="@+id/note"
-        android:background="@color/note"
-        android:padding="3dp"
+        android:background="@color/light_gray"
+        android:padding="5dp"
         android:gravity="start"
+        android:maxLength="300"
         android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

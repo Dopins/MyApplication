@@ -231,7 +231,6 @@
         android:background="@color/gray" />
     <LinearLayout
         android:id="@+id/night_time"
-        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="60dp">
@@ -258,6 +257,15 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/gray" />
+        <TextView
+            android:textColor="@color/zhihu"
+            android:text="关于"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            android:textSize="14sp"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     <Button
         android:id="@+id/about"
         android:textColor="@color/menu_item"
@@ -272,7 +280,16 @@
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:background="@color/gray" />
-
+        <Button
+            android:id="@+id/feedback"
+            android:textColor="@color/menu_item"
+            android:background="@color/light_gray"
+            android:layout_width="match_parent"
+            android:text="意见反馈"
+            android:textSize="15sp"
+            android:gravity="left|center_vertical"
+            android:layout_height="60dp">
+        </Button>
     </LinearLayout>
     </ScrollView>
 </LinearLayout>
