@@ -17,7 +17,6 @@
         <TextView
             android:id="@+id/item_name"
             android:gravity="left|center_vertical"
-            android:textStyle="bold"
             android:textColor="@color/menu_item"
             android:textSize="15sp"
             android:layout_margin="10dp"

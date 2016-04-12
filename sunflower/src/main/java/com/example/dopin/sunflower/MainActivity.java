@@ -677,7 +677,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         final EditText labelText=new EditText(this);
         labelText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});//字数不能超过10
 
-        new AlertDialog.Builder(this).setTitle("设置标签").setIcon(android.R.drawable.ic_dialog_info)
+        new AlertDialog.Builder(this).setTitle("设置标签")
+                .setIcon(android.R.drawable.ic_menu_edit)
                 .setView(labelText)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -723,12 +724,14 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public void onBackPressed(){
         if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
             mDrawerLayout.closeDrawers();
+        }else if(index==6){
+            setPage(0);
         }else close();
     }
 
     private void close(){
         if(System.currentTimeMillis() - exitTime > 2000) {
-            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "再按一次退出向日葵", Toast.LENGTH_SHORT).show();
             exitTime = System.currentTimeMillis();
         } else {
             finish();

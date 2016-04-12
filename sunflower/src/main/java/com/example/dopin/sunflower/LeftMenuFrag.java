@@ -3,13 +3,13 @@ package com.example.dopin.sunflower;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import com.example.dopin.androidpractice2.R;
 import org.apache.http.HttpEntity;
@@ -44,8 +43,12 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
     public static String user_account;
     private String registerUrl = MainActivity.serverIP+"/SunflowerService/RegisterServlet";
     private String loginUrl = MainActivity.serverIP+"/SunflowerService/LoginServlet";
+    private String nickNameUrl=MainActivity.serverIP+"/SunflowerService/NicknameServlet";
+    private String passwordUrl=MainActivity.serverIP+"/SunflowerService/PasswordServlet";
     ProgressDialog progressDialog;
+    String nickname;
     String account;
+    String oldPassword;
     String password;
     String password2;
     private SharedPreferences pref;
@@ -75,7 +78,7 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                 if(user_account.equals("")){
                     showLogin();
                 }else{
-                    intentPersonActivity();
+                   showChoose();
                 }
                 break;
             case R.id.logout:
@@ -85,18 +88,101 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-    private void intentPersonActivity(){
-        Intent intent=new Intent(view.getContext(),PersonActivity.class);
-        startActivity(intent);
+    private void showChoose(){
+        final View chooseView = LayoutInflater.from(view.getContext()).inflate(R.layout.activity_choose, null);
+        final AlertDialog.Builder customDia = new AlertDialog.Builder(view.getContext());
+
+        Button changeNickname=(Button)chooseView.findViewById(R.id.btn_nick_name);
+        Button changeHeadImage=(Button)chooseView.findViewById(R.id.btn_head_image);
+        Button changePassword=(Button)chooseView.findViewById(R.id.btn_password);
+
+        changeNickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChangeNicknameDia();
+            }
+        });
+        changeHeadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChangePasswordDia();
+            }
+        });
+        customDia.setTitle("选择");
+
+        customDia.setView(chooseView);
+        customDia.create().show();
+    }
+    private void showChangeNicknameDia(){
+        final EditText nicknameText=new EditText(view.getContext());
+        nicknameText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});//字数不能超过10
+
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("修改昵称")
+                .setIcon(android.R.drawable.ic_menu_edit)
+                .setView(nicknameText)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        nickname=nicknameText.getText().toString();
+                        new Thread(nicknameTask).start();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+    private void showChangePasswordDia(){
+        View passwordView = LayoutInflater.from(view.getContext()).inflate(R.layout.activity_password, null);
+        final EditText oldPassText=(EditText)passwordView.findViewById(R.id.old_password);
+        final EditText newPassText=(EditText)passwordView.findViewById(R.id.new_password);
+        final EditText newPassText2=(EditText)passwordView.findViewById(R.id.new_password_confirm);
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("修改密码")
+                .setIcon(android.R.drawable.ic_menu_edit)
+                .setView(passwordView)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        oldPassword = oldPassText.getText().toString();
+                        password = newPassText.getText().toString();
+                        password2 = newPassText2.getText().toString();
+                        if (password.equals(password2)) {
+                            new Thread(passwordTask).start();
+                        }else{
+                            showChangePasswordWrongDia("新密码输入不一致");
+                        }
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+    private void showChangePasswordWrongDia(String message){
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("错误")
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        showChangePasswordDia();
+                    }
+                })
+                .show();
     }
     private void saveAccount(){
         editor.putString("user_account", user_account);
+        editor.putString("nickname",nickname);
         editor.commit();
     }
     private void setAccount(){
         user_account=pref.getString("user_account","");
         if(!user_account.equals("")){
-            ID.setText(user_account);
+            nickname=pref.getString("nickname",user_account);
+            ID.setText(nickname);
         }
     }
     private void showConfirmDialog(){
@@ -243,7 +329,8 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                 if(jo.getBoolean("result")){
                     progressDialog.dismiss();
                     user_account=jo.getString("account");
-                    ID.setText(user_account);
+                    nickname=jo.getString("nickname");
+                    ID.setText(nickname);
                     Toast.makeText(view.getContext(),"登录成功",Toast.LENGTH_SHORT).show();
                     saveAccount();
                     MainActivity.mDrawerLayout.closeDrawer(Gravity.LEFT);
@@ -269,6 +356,43 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                 }else{
                     progressDialog.dismiss();
                     showLoginWrongDialog("该账号已被注册");
+                }
+            }catch (Exception e){
+
+            }
+        }
+    };
+
+    Handler handlerNickname = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONObject jo=(JSONObject)msg.obj;
+            try{
+                if(jo.getBoolean("result")){
+                    ID.setText(nickname);
+                    editor.putString("nickname",nickname);
+                    editor.commit();
+                    Toast.makeText(view.getContext(),"修改成功",Toast.LENGTH_SHORT).show();
+                    MainActivity.mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
+            }catch (Exception e){
+
+            }
+        }
+    };
+
+    Handler handlerPassword = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            JSONObject jo=(JSONObject)msg.obj;
+            try{
+                if(jo.getBoolean("result")){
+                    Toast.makeText(view.getContext(),"修改成功",Toast.LENGTH_SHORT).show();
+                    MainActivity.mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }else{
+                    showChangePasswordWrongDia("输入旧密码不正确");
                 }
             }catch (Exception e){
 
@@ -316,6 +440,8 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
         }
     };
 
+
+
     Runnable registerTask = new Runnable() {
 
         @Override
@@ -345,6 +471,81 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                     handlerRegister.sendMessage(msg);
                 }
 
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Runnable nicknameTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", user_account);
+            NameValuePair pair2 = new BasicNameValuePair("nickname", nickname);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(nickNameUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONObject jsonObject=parseJSON(response);
+                    Message msg = new Message();
+                    msg.obj=jsonObject;
+                    handlerNickname.sendMessage(msg);
+                }
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    Runnable passwordTask = new Runnable() {
+
+        @Override
+        public void run() {
+            NameValuePair pair1 = new BasicNameValuePair("account", user_account);
+            NameValuePair pair2 = new BasicNameValuePair("old_password", oldPassword);
+            NameValuePair pair3 = new BasicNameValuePair("new_password", password);
+
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(pair1);
+            pairList.add(pair2);
+            pairList.add(pair3);
+            try
+            {
+                HttpEntity requestHttpEntity = new UrlEncodedFormEntity(pairList, HTTP.UTF_8);//设置编码
+                HttpPost httpPost = new HttpPost(passwordUrl);
+                httpPost.setEntity(requestHttpEntity);
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                if (httpResponse.getStatusLine().getStatusCode()==200)
+                {
+                    HttpEntity httpEntity = httpResponse.getEntity();
+                    String response= EntityUtils.toString(httpEntity, "utf-8");
+
+                    JSONObject jsonObject=parseJSON(response);
+                    Message msg = new Message();
+                    msg.obj=jsonObject;
+                    handlerPassword.sendMessage(msg);
+                }
             }
             catch (Exception e)
             {

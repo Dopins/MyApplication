@@ -59,6 +59,7 @@
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:id="@+id/note"
+                    android:background="@android:drawable/ic_menu_edit"
                     android:layout_marginRight="20dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp" />

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_height="match_parent">
+<Button
+    android:id="@+id/btn_nick_name"
+    android:text="修改昵称"
+    android:layout_width="match_parent"
+    android:layout_height="50dp" />
+    <Button
+        android:id="@+id/btn_head_image"
+        android:text="修改头像"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <Button
+        android:id="@+id/btn_password"
+        android:text="修改密码"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+</LinearLayout>

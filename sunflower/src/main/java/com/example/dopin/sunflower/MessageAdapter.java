@@ -80,8 +80,10 @@ public class MessageAdapter extends SimpleAdapter {
             if(!("".equals((String)item.get("label"))||item.get("label")==null)){
                 viewHolder.label.setBackground(view.getResources().getDrawable(R.drawable.label_shape));
                 viewHolder.label.setText((String) item.get("label"));
-            }if(!(boolean)item.get("have_note")){
-                viewHolder.hasNote.setImageResource(android.R.drawable.ic_menu_edit);
+            }if((boolean)item.get("have_note")){
+                viewHolder.hasNote.setVisibility(View.VISIBLE);
+            }else{
+                viewHolder.hasNote.setVisibility(View.GONE);
             }
         }else if(MainActivity.index==3||MainActivity.index==4||MainActivity.index==5||is_no_image(view)){
             viewHolder.image.setVisibility(View.GONE);

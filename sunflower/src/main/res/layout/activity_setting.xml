@@ -5,21 +5,93 @@
     android:layout_height="match_parent"
     android:background="@color/light_gray"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dopin.sunflower.SettingActivity">
 
     <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/zhihu"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"/>
+        <TextView
+            android:textSize="20sp"
+            android:text="设置"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="省流量模式"
+                android:textColor="@color/menu_item"
+                android:clickable="false"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="13sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="2dp"
+                android:text="仅在wifi环境下才会加载图片"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:clickable="false"
+            android:layout_height="match_parent" />
+        <Switch
+            android:id="@+id/swi_save_flow"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <TextView
+        android:textColor="@color/zhihu"
+        android:text="清理缓存"
+        android:textStyle="bold"
+        android:paddingTop="10dp"
+        android:textSize="14sp"
+        android:layout_gravity="left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <LinearLayout
         android:id="@+id/clean_cache"
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:text="清理缓存"
-            android:paddingLeft="10dp"
+            android:textColor="@color/menu_item"
             android:clickable="false"
             android:textSize="15sp"
             android:layout_gravity="center"
@@ -39,61 +111,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:background="@color/white"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <LinearLayout
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="省流量模式"
-                android:clickable="false"
-                android:textSize="15sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:textSize="13sp"
-                android:textColor="@color/gray"
-                android:layout_marginTop="2dp"
-                android:text="仅在wifi环境下才会加载图片"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:clickable="false"
-            android:layout_height="match_parent" />
-        <Switch
-            android:id="@+id/swi_save_flow"
-            android:layout_gravity="center_vertical"
-            android:paddingRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <TextView
-        android:textColor="@color/blue"
-        android:text="自动清理缓存"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:textSize="15sp"
-        android:layout_gravity="left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:text="关闭应用时清理"
-            android:paddingLeft="10dp"
+            android:textColor="@color/menu_item"
             android:textSize="15sp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -109,14 +136,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:text="大于50M时清理"
-            android:paddingLeft="10dp"
+            android:textColor="@color/menu_item"
+
             android:textSize="15sp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -132,24 +162,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
 
     <TextView
-        android:textColor="@color/blue"
-        android:text="自动切换主题"
+        android:textColor="@color/zhihu"
+        android:text="切换主题"
         android:textStyle="bold"
-        android:padding="10dp"
-        android:textSize="15sp"
+        android:paddingTop="10dp"
+        android:textSize="14sp"
         android:layout_gravity="left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <LinearLayout
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:id="@+id/theme_text"
-            android:text="开关"
-            android:paddingLeft="10dp"
+            android:text="自动切换主题"
+            android:textColor="@color/menu_item"
             android:textSize="15sp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -165,15 +198,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
     <LinearLayout
         android:id="@+id/day_time"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="60dp">
         <TextView
             android:text="日间模式开启时间"
+            android:textColor="@color/menu_item"
             android:clickable="false"
             android:layout_marginTop="10dp"
             android:textSize="15sp"
@@ -189,16 +225,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
     <LinearLayout
         android:id="@+id/night_time"
-        android:paddingLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
             android:clickable="false"
             android:text="夜间模式开启时间"
+            android:textColor="@color/menu_item"
             android:layout_marginTop="10dp"
             android:textSize="15sp"
             android:layout_gravity="left"
@@ -213,17 +253,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
     <Button
         android:id="@+id/about"
-        android:background="@color/white"
+        android:textColor="@color/menu_item"
+        android:background="@color/light_gray"
         android:layout_width="match_parent"
         android:text="关于"
         android:textSize="15sp"
         android:gravity="left|center_vertical"
-        android:paddingLeft="10dp"
         android:layout_height="60dp">
     </Button>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="@color/gray" />
+
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>
