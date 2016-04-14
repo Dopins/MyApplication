@@ -68,7 +68,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
-    public static String serverIP="http://125.216.249.194:8888";
+    public static String serverIP="http://115.159.88.202:8080";
     private String collectUrl = serverIP+"/SunflowerService/CollectServlet";
     private String getCollectionListUrl = serverIP+"/SunflowerService/GetCollectionListServlet";
     private String setLabelUrl =serverIP+ "/SunflowerService/SetLabelServlet";
@@ -96,6 +96,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private long exitTime = 0;
     Button btn_theme;
     Button btn_setting;
+    LinearLayout background;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +136,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
          btn_theme=(Button)findViewById(R.id.btn_theme);
          btn_setting=(Button)findViewById(R.id.btn_setting);
+        background=(LinearLayout)findViewById(R.id.background_layout);
 
         setTheme();
 
@@ -194,6 +196,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
     private void setNightTheme(){
         night=true;
+        background.setBackground(getResources().getDrawable(R.drawable.background_night));
 
         mSwipeLayout.setColorSchemeResources(R.color.night_title);
         titleLayout.setBackgroundColor(getResources().getColor(R.color.night_title));
@@ -217,7 +220,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     }
     private void setDayTheme(){
         night=false;
-
+        background.setBackground(getResources().getDrawable(R.drawable.background_day));
         setTitleBackground();
 
         mListView.setBackgroundColor(getResources().getColor(R.color.white));

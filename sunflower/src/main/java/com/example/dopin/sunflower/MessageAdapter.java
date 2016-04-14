@@ -26,14 +26,12 @@ public class MessageAdapter extends SimpleAdapter {
     private LayoutInflater mInflater;
     private int mResource;
     private List<Map<String, Object>> data;
-    private Context context;
     public MessageAdapter(Context context, List<Map<String, Object>>items,int resource,String[] from,int[] to) {
         super(context, items, resource, from, to);
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResource=resource;
         data=items;
         imageLoader = new AsyncImageLoader(context);
-        this.context=context;
     }
     @Override
     public int getCount() {
