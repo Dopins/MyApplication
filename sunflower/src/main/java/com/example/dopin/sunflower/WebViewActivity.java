@@ -5,11 +5,15 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
@@ -46,6 +50,7 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout mSwipeLayout;
     String title;
     String url;
+    FloatingActionsMenu menuMultipleActions;
     boolean showResult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,36 +73,84 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
     public void onRefresh(){
         mSwipeLayout.setRefreshing(false);
     }
+    private void init(){
+        showResult=true;
+        Intent intent=getIntent();
+        url=intent.getStringExtra("url");
+        title=intent.getStringExtra("title");
+
+        webView=(WebView)findViewById(R.id.web_view);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setSupportZoom(true);
+        settings.setUseWideViewPort(true);
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        settings.setLoadWithOverviewMode(true);
+        settings.setDisplayZoomControls(false);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl(url);
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorSchemeResources(R.color.zhihu, R.color.guoke, R.color.yiyan,
+                R.color.huxiu, R.color.shiwuyan, R.color.douban);
+
+        mSwipeLayout.setProgressViewOffset(false, 0, 20);
+        mSwipeLayout.setRefreshing(true);
+
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent me) {
+                if (menuMultipleActions.isExpanded()) {
+                    menuMultipleActions.collapse();
+                }
+                return false;
+            }
+        });
+
+        initFloatingButton();
+    }
+    @Override
+    public void onBackPressed(){
+        if (menuMultipleActions.isExpanded()) {
+            menuMultipleActions.collapse();
+        } else {
+            finish();
+        }
+    }
+
     private void initFloatingButton(){
-        final com.getbase.floatingactionbutton.FloatingActionButton actionA = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_a);
-        actionA.setOnClickListener(new View.OnClickListener() {
+        final com.getbase.floatingactionbutton.FloatingActionButton btn_share =
+                (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_a);
+        btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 share(title, url);
             }
         });
 
-        final com.getbase.floatingactionbutton.FloatingActionButton actionB = (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_b);
-        actionB.setOnClickListener(new View.OnClickListener() {
+        final com.getbase.floatingactionbutton.FloatingActionButton btn_collect =
+                (com.getbase.floatingactionbutton.FloatingActionButton) findViewById(R.id.action_b);
+        btn_collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 collect();
             }
         });
 
-        final com.getbase.floatingactionbutton.FloatingActionButton actionC = new com.getbase.floatingactionbutton.FloatingActionButton(getBaseContext());
-        actionC.setTitle("笔记");
-        actionC.setIcon(android.R.drawable.ic_menu_edit);
-        actionC.setOnClickListener(new View.OnClickListener() {
+        final com.getbase.floatingactionbutton.FloatingActionButton btn_setNote =
+                new com.getbase.floatingactionbutton.FloatingActionButton(getBaseContext());
+        btn_setNote.setTitle("笔记");
+        btn_setNote.setIcon(android.R.drawable.ic_menu_edit);
+        btn_setNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setNote(title);
             }
         });
 
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
-        menuMultipleActions.addButton(actionC);
-
+        menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        menuMultipleActions.addButton(btn_setNote);
     }
     private void share(String title,String url){
 
@@ -195,32 +248,5 @@ public class WebViewActivity extends Activity implements SwipeRefreshLayout.OnRe
 
         }
         return null;
-    }
-    private void init(){
-        showResult=true;
-        Intent intent=getIntent();
-        url=intent.getStringExtra("url");
-        title=intent.getStringExtra("title");
-
-        webView=(WebView)findViewById(R.id.web_view);
-        WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setSupportZoom(true);
-        settings.setUseWideViewPort(true);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.setLoadWithOverviewMode(true);
-        settings.setDisplayZoomControls(false);
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(url);
-
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.id_swipe_ly);
-        mSwipeLayout.setOnRefreshListener(this);
-        mSwipeLayout.setColorSchemeResources(R.color.zhihu, R.color.guoke, R.color.yiyan,
-                R.color.huxiu, R.color.shiwuyan, R.color.douban);
-
-        mSwipeLayout.setProgressViewOffset(false, 0, 20);
-        mSwipeLayout.setRefreshing(true);
-
-        initFloatingButton();
     }
 }

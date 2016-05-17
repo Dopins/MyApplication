@@ -198,6 +198,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private void setNightTheme(){
         night=true;
         background.setBackground(getResources().getDrawable(R.drawable.background_night));
+        btn_theme.setText("日间模式");
 
         mSwipeLayout.setColorSchemeResources(R.color.night_title);
         titleLayout.setBackgroundColor(getResources().getColor(R.color.night_title));
@@ -222,6 +223,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     private void setDayTheme(){
         night=false;
         background.setBackground(getResources().getDrawable(R.drawable.background_day));
+        btn_theme.setText("夜间模式");
         setTitleBackground();
 
         mListView.setBackgroundColor(getResources().getColor(R.color.white));

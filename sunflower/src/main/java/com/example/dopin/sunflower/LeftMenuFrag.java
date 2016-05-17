@@ -73,7 +73,6 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
     private String loginUrl = MainActivity.serverIP+"/SunflowerService/LoginServlet";
     private String nickNameUrl=MainActivity.serverIP+"/SunflowerService/NicknameServlet";
     private String passwordUrl=MainActivity.serverIP+"/SunflowerService/PasswordServlet";
-    private String imageUrl=MainActivity.serverIP+"/SunflowerService/ImageServlet";
     public static final int CHOOSE_PHOTO=1;
     ProgressDialog progressDialog;
     String nickname;
@@ -186,9 +185,6 @@ public class LeftMenuFrag extends Fragment implements View.OnClickListener{
                 }
             }
         }
-    }
-    private void uploadImage(Bitmap bitmap){
-
     }
 
     private void displayImage(){

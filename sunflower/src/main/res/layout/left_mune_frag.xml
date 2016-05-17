@@ -26,7 +26,7 @@
             android:background="@color/gray" />
         <Button
             android:id="@+id/btn_theme"
-            android:text="切换主题"
+            android:text="夜间模式"
             android:paddingLeft="10dp"
             android:textColor="@color/menu_item"
             android:textSize="14sp"
