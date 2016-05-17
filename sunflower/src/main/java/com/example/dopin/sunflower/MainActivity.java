@@ -69,6 +69,7 @@ import java.util.regex.Pattern;
 public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener,View.OnClickListener  {
 
     public static String serverIP="http://115.159.88.202:8080";
+    //public static String serverIP="http://125.216.249.194:8888";
     private String collectUrl = serverIP+"/SunflowerService/CollectServlet";
     private String getCollectionListUrl = serverIP+"/SunflowerService/GetCollectionListServlet";
     private String setLabelUrl =serverIP+ "/SunflowerService/SetLabelServlet";
@@ -845,6 +846,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
             NameValuePair pair2 = new BasicNameValuePair("title", title);
             NameValuePair pair3 = new BasicNameValuePair("url", url);
             NameValuePair pair4 = new BasicNameValuePair("from", getFrom());
+            Log.i("tag",title+ "  "+url +"  "+getFrom() );
 
             List<NameValuePair> pairList = new ArrayList<NameValuePair>();
             pairList.add(pair1);

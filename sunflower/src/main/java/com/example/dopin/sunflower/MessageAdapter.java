@@ -78,7 +78,10 @@ public class MessageAdapter extends SimpleAdapter {
             if(!("".equals((String)item.get("label"))||item.get("label")==null)){
                 viewHolder.label.setBackground(view.getResources().getDrawable(R.drawable.label_shape));
                 viewHolder.label.setText((String) item.get("label"));
-            }if((boolean)item.get("have_note")){
+            }else {
+                viewHolder.label.setVisibility(View.GONE);
+            }
+            if((boolean)item.get("have_note")){
                 viewHolder.hasNote.setVisibility(View.VISIBLE);
             }else{
                 viewHolder.hasNote.setVisibility(View.GONE);
@@ -119,11 +122,10 @@ public class MessageAdapter extends SimpleAdapter {
                     });
 
             viewHolder.image.setImageBitmap(bitmap);
-        }
-    }
+                  }
+            }
         }
         viewHolder.title.setText((String)item.get("title"));
-
         return view;
     }
     private boolean is_no_image(View view){

@@ -78,10 +78,10 @@ public class SearchActivity extends Activity {
                 searchBack.setBackgroundColor(getResources().getColor(R.color.guoke));
                 break;
             case 2:
-                searchBack.setBackgroundColor(getResources().getColor(R.color.yiyan));
+                searchBack.setBackgroundColor(getResources().getColor(R.color.huxiu));
                 break;
             case 3:
-                searchBack.setBackgroundColor(getResources().getColor(R.color.huxiu));
+                searchBack.setBackgroundColor(getResources().getColor(R.color.yiyan));
                 break;
             case 4:
                 searchBack.setBackgroundColor(getResources().getColor(R.color.shiwuyan));
@@ -139,7 +139,9 @@ public class SearchActivity extends Activity {
                                     long arg3) {
                 Map<String, Object> map = data.get(position);
                 String url = (String)map.get("url");
+                String title=(String)map.get("title");
                 Intent intent = new Intent(SearchActivity.this,WebViewActivity.class);
+                intent.putExtra("title", title);
                 intent.putExtra("url", url);
                 startActivity(intent);
             }
